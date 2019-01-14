@@ -70,7 +70,7 @@ int main()
 //                cvtColor(src_left, src_left, COLOR_BGR2GRAY);
 //                cvtColor(src_right, src_right, COLOR_BGR2GRAY);
 //            }
-            //armor_finder.run(src_left, src_right);
+            armor_finder.run(src_left, src_right);
             waitKey(1);
             cout<<"running"<<endl;
         }

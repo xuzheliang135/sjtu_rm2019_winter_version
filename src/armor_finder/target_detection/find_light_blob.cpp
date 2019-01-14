@@ -15,8 +15,10 @@ void ArmorFinder::initLightParam() {
 
 
 bool ArmorFinder::findLightBlob(const cv::Mat &src, vector<LightBlob> &light_blobs) {
+    static Mat src_gray;
     static Mat src_bin;
-    threshold(src, src_bin, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+    cvtColor(src, src_gray, COLOR_BGR2GRAY);
+    threshold(src_gray, src_bin, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
     //imshow("binary image", src_bin);
     std::vector<vector<Point> > light_contours;
     findContours(src_bin, light_contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
