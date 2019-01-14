@@ -23,7 +23,3 @@ ArmorFinder::ArmorFinder():
 }
 
 
-void ArmorFinder::initArmorSeekingParam() {
-    armor_seeking_param_.BORDER_IGNORE = 10;
-    armor_seeking_param_.BOX_EXTRA = 10;
-}

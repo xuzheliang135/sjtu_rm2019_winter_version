@@ -14,6 +14,11 @@ void ArmorFinder::initLightCoupleParam() {
     light_couple_param_.TWIN_CENTER_POSITION_DIFF_RATIO = 0.5;
 }
 
+void ArmorFinder::initArmorSeekingParam() {
+    armor_seeking_param_.BORDER_IGNORE = 10;
+    armor_seeking_param_.BOX_EXTRA = 10;
+}
+
 
 bool ArmorFinder::matchLightBlob(vector<LightBlob> &light_blobs, cv::Rect2d &armor_box) {
     if (light_blobs.size() < 2)
