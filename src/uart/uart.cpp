@@ -13,14 +13,13 @@ using std::hex;
 
 
 Uart::Uart(){
-    cout<<"???"<<endl;
+
     fd = open("/dev/ttyUSB0", O_RDWR);
     if(fd < 0)
     {
         cerr<<"open port error"<<endl;
         return;
     }
-    cout<<"?????????"<<endl;
 
     if(set_opt(fd, 115200, 8, 'N', 1) < 0 )
     {

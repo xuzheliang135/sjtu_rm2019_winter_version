@@ -2,6 +2,8 @@
 #include "armor_finder/armor_finder.h"
 
 using namespace cv;
+using std::cout;
+using std::endl;
 
 void ArmorFinder::initLightParam() {
     light_blob_param_.GRAY_THRESH = 240;
@@ -17,7 +19,9 @@ void ArmorFinder::initLightParam() {
 bool ArmorFinder::findLightBlob(const cv::Mat &src, vector<LightBlob> &light_blobs) {
     static Mat src_gray;
     static Mat src_bin;
+
     cvtColor(src, src_gray, COLOR_BGR2GRAY);
+
     threshold(src_gray, src_bin, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
     //imshow("binary image", src_bin);
     std::vector<vector<Point> > light_contours;
