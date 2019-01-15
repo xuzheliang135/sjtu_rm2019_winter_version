@@ -9,8 +9,16 @@ void ArmorFinder::showArmorBox(std::string windows_name,
                                 const cv::Mat &src_right, const cv::Rect2d &armor_box_right)
 {
     static Mat image2show_left, image2show_right;
-    cvtColor(src_left, image2show_left, COLOR_GRAY2RGB);
-    cvtColor(src_right, image2show_right, COLOR_GRAY2BGR);
+    if(src_left.type() == CV_8UC1) // 黑白图像
+    {
+        cvtColor(src_left, image2show_left, COLOR_GRAY2RGB);
+        cvtColor(src_right, image2show_right, COLOR_GRAY2BGR);
+    }
+    else if(src_left.type() == CV_8UC3) //RGB 彩色
+    {
+        image2show_left = src_left.clone();
+        image2show_right = src_right.clone();
+    }
     Mat combined_image(image2show_left.rows, image2show_left.cols+image2show_right.cols+10, image2show_left.type());
     rectangle(image2show_left, armor_box_left, Scalar(0, 255, 0), 2);
     rectangle(image2show_right, armor_box_right, Scalar(0, 255, 0), 2);
@@ -24,8 +32,18 @@ void ArmorFinder::showContours(std::string windows_name,
                                 const cv::Mat &src_right, const std::vector<LightBlob> &light_blobs_right)
 {
     static Mat image2show_left, image2show_right;
-    cvtColor(src_left, image2show_left, COLOR_GRAY2RGB);
-    cvtColor(src_right, image2show_right, COLOR_GRAY2BGR);
+
+    if(src_left.type() == CV_8UC1) // 黑白图像
+    {
+        cvtColor(src_left, image2show_left, COLOR_GRAY2RGB);
+        cvtColor(src_right, image2show_right, COLOR_GRAY2BGR);
+    }
+    else if(src_left.type() == CV_8UC3) //RGB 彩色
+    {
+        image2show_left = src_left.clone();
+        image2show_right = src_right.clone();
+    }
+
     Mat combined_image(image2show_left.rows, image2show_left.cols+image2show_right.cols+10, image2show_left.type());
     for(const auto &light_blob:light_blobs_left)
     {
@@ -46,13 +64,19 @@ void ArmorFinder::showContours(std::string windows_name,
 void ArmorFinder::showSpacePositionBackToStereoVision(const cv::Mat &src_left, const cv::Mat &src_right,
                                                       const cv::Point3d &space_position) {
     static Mat image2show_left, image2show_right;
-    image2show_left = src_left.clone();
-    image2show_right = src_right.clone();
-    Mat combined_image(image2show_left.rows, image2show_left.cols+image2show_right.cols+10, image2show_left.type());
 
-    cvtColor(image2show_left, image2show_left, COLOR_GRAY2RGB);
-    cvtColor(image2show_right, image2show_right, COLOR_GRAY2RGB);
-    cvtColor(combined_image, combined_image, COLOR_GRAY2RGB);
+    if(src_left.type() == CV_8UC1) // 黑白图像
+    {
+        cvtColor(src_left, image2show_left, COLOR_GRAY2RGB);
+        cvtColor(src_right, image2show_right, COLOR_GRAY2BGR);
+    }
+    else if(src_left.type() == CV_8UC3) //RGB 彩色
+    {
+        image2show_left = src_left.clone();
+        image2show_right = src_right.clone();
+    }
+
+    Mat combined_image(image2show_left.rows, image2show_left.cols+image2show_right.cols+10, image2show_left.type());
 
     Point2d left_center, right_center;
     left_center.x = space_position.x / space_position.z * stereo_camera_param_.FOCUS  / stereo_camera_param_.LENGTH_PER_PIXAL + 320;

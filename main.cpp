@@ -72,7 +72,7 @@ int main()
 //            }
             armor_finder.run(src_left, src_right);
             waitKey(1);
-            cout<<"running"<<endl;
+
         }
         delete video;
         cout<<"Program fails. Restarting"<<endl;
