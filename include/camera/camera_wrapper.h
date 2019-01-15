@@ -39,6 +39,9 @@ private:
     int channel0;
     int channel1;
 
+
+
+
     void swapCameraHandle();
 
 public:
@@ -47,6 +50,10 @@ public:
 
     bool init() final;
     bool read(cv::Mat& src0, cv::Mat& src1) final;
+    bool readRaw(cv::Mat& src0, cv::Mat& src1);
+    bool readProcessed(cv::Mat& src0, cv::Mat& src1);
+
+
 };
 
 

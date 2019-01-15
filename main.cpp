@@ -8,9 +8,11 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "armor_finder/armor_finder.h"
+#include "armor_finder/constant.h"
 #include "camera/camera_wrapper.h"
 #include "camera/video_wrapper.h"
 #include "camera/wrapper_head.h"
+
 
 #include <time.h>
 
@@ -25,7 +27,8 @@ using std::string;
 
 int main()
 {
-    int key;
+    int enemy_color = ENEMY_RED;
+
     while(true)
     {
         int from_camera = 1;
@@ -39,10 +42,9 @@ int main()
             video = new CameraWrapper;
         else
             video = new VideoWrapper(
-                    "/home/zhikun/Videos/video_horizontal_move_0.avi",
-                    "/home/zhikun/Videos/video_horizontal_move_1.avi"
+                    "/home/zhikun/Videos/video_color_0.avi",
+                    "/home/zhikun/Videos/video_color_1.avi"
                     );
-
 
         if(video->init())
         {
@@ -50,12 +52,11 @@ int main()
         } else{
             continue;
         }
-
       
         Mat src_left, src_right;
 
         ArmorFinder armor_finder;
-
+        armor_finder.setEnemyColor(enemy_color);
         cout<<"start working"<<endl;
 
         //for(int i = 0; i < 10; i++) video->read(src_left, src_right);
@@ -63,6 +64,7 @@ int main()
         while (video->read(src_left, src_right))
         {
             armor_finder.run(src_left, src_right);
+
             waitKey(1);
 
         }

@@ -19,4 +19,8 @@ bool VideoWrapper::init() {
 
 bool VideoWrapper::read(cv::Mat &src_left, cv::Mat &src_right) {
     return video0.read(src_left) && video1.read(src_right);
+
+
+
+
 }

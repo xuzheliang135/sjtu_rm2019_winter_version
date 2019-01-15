@@ -6,6 +6,7 @@
 #define STEREOVISION_FROM_VIDEO_FILE_WRAPPER_HEAD_H
 
 #include <opencv2/core/core.hpp>
+#include "armor_finder/constant.h"
 
 /**
  * @brief A virtual class for wrapper of camera and video files

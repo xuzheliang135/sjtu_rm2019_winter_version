@@ -126,11 +126,46 @@ bool CameraWrapper::init() {
 
 
 bool CameraWrapper::read(cv::Mat& src0, cv::Mat& src1) {
+    readRaw(src0, src1);
+
+}
+
+bool CameraWrapper::readRaw(cv::Mat &src0, cv::Mat &src1) {
+    if (CameraGetImageBuffer(h_camera0, &frame_info0, &pby_buffer0, 1000) == CAMERA_STATUS_SUCCESS &&
+        CameraGetImageBuffer(h_camera1, &frame_info1, &pby_buffer1, 1000) == CAMERA_STATUS_SUCCESS)
+    {
+        if (iplImage0) {
+            cvReleaseImageHeader(&iplImage0);
+        }
+        if (iplImage1){
+            cvReleaseImageHeader(&iplImage1);
+        }
+
+        iplImage0 = cvCreateImageHeader(cvSize(frame_info0.iWidth, frame_info0.iHeight), IPL_DEPTH_8U, 1);
+        iplImage1 = cvCreateImageHeader(cvSize(frame_info1.iWidth, frame_info1.iHeight), IPL_DEPTH_8U, 1);
+
+        cvSetData(iplImage0, pby_buffer0, frame_info0.iWidth);  //此处只是设置指针，无图像块数据拷贝，不需担心转换效率
+        cvSetData(iplImage1, pby_buffer1, frame_info1.iWidth);
+
+        src0 = cv::cvarrToMat(iplImage0);
+        src1 = cv::cvarrToMat(iplImage1);
+
+        //在成功调用CameraGetImageBuffer后，必须调用CameraReleaseImageBuffer来释放获得的buffer。
+        //否则再次调用CameraGetImageBuffer时，程序将被挂起一直阻塞，直到其他线程中调用CameraReleaseImageBuffer来释放了buffer
+        CameraReleaseImageBuffer(h_camera0, pby_buffer0);
+        CameraReleaseImageBuffer(h_camera1, pby_buffer1);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool CameraWrapper::readProcessed(cv::Mat &src0, cv::Mat &src1) {
     if (CameraGetImageBuffer(h_camera0, &frame_info0, &pby_buffer0, 1000) == CAMERA_STATUS_SUCCESS &&
         CameraGetImageBuffer(h_camera1, &frame_info1, &pby_buffer1, 1000) == CAMERA_STATUS_SUCCESS)
     {
 
-        CameraImageProcess(h_camera0, pby_buffer0, rgb_buffer0, &frame_info0);
+        CameraImageProcess(h_camera0, pby_buffer0, rgb_buffer0, &frame_info0);  // this function is super slow, better not to use it.
         CameraImageProcess(h_camera1, pby_buffer1, rgb_buffer1, &frame_info1);
         if (iplImage0) {
             cvReleaseImageHeader(&iplImage0);
@@ -141,6 +176,7 @@ bool CameraWrapper::read(cv::Mat& src0, cv::Mat& src1) {
 
         iplImage0 = cvCreateImageHeader(cvSize(frame_info0.iWidth, frame_info0.iHeight), IPL_DEPTH_8U, channel0);
         iplImage1 = cvCreateImageHeader(cvSize(frame_info1.iWidth, frame_info1.iHeight), IPL_DEPTH_8U, channel1);
+
         cvSetData(iplImage0, rgb_buffer0, frame_info0.iWidth * channel0);  //此处只是设置指针，无图像块数据拷贝，不需担心转换效率
         cvSetData(iplImage1, rgb_buffer1, frame_info1.iWidth * channel1);
 
@@ -151,7 +187,6 @@ bool CameraWrapper::read(cv::Mat& src0, cv::Mat& src1) {
         //否则再次调用CameraGetImageBuffer时，程序将被挂起一直阻塞，直到其他线程中调用CameraReleaseImageBuffer来释放了buffer
         CameraReleaseImageBuffer(h_camera0, pby_buffer0);
         CameraReleaseImageBuffer(h_camera1, pby_buffer1);
-
         return true;
     } else {
         return false;
@@ -173,4 +208,8 @@ void CameraWrapper::swapCameraHandle() {
     h_camera0 = h_camera1;
     h_camera1 = tmp_h_camera;
 }
+
+
+
+
 

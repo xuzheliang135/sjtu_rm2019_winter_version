@@ -11,7 +11,7 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     showArmorBox("tracking boxes", src_left, armor_box_left_, src_right, armor_box_right_);
 
     /********************** convert to 3d coordinate *********************************/
-    convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
+    //convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
 
 
     /********************** convert 3d coordinate back to two camera vision ***************/
@@ -19,7 +19,7 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
 
     /******************** predict the armor moving path *******************************/
-    predictArmorPosition(armor_space_position_, armor_predicted_position_);
+    //predictArmorPosition(armor_space_position_, armor_predicted_position_);
 
 
 
