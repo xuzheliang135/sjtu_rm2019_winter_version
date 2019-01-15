@@ -8,7 +8,8 @@ using std::vector;
 
 
 ArmorFinder::ArmorFinder():
-                kcf_tracker_(false, true, false, false)
+                kcf_tracker_left_(false, true, false, false),
+                kcf_tracker_right_(false, true, false, false)
                 {
     initLightParam();
     initLightCoupleParam();

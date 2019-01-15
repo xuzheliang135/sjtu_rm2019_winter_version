@@ -6,7 +6,7 @@ using std::cout;
 using std::endl;
 
 void ArmorFinder::initLightParam() {
-    light_blob_param_.GRAY_THRESH = 240;
+    light_blob_param_.GRAY_THRESH = 230;
     light_blob_param_.CONTOUR_AREA_MIN = 20;
     light_blob_param_.CONTOUR_AREA_MAX = 3000;
     light_blob_param_.CONTOUR_LENGTH_MIN = 10;
@@ -19,13 +19,16 @@ void ArmorFinder::initLightParam() {
 bool ArmorFinder::findLightBlob(const cv::Mat &src, vector<LightBlob> &light_blobs) {
     static Mat src_gray;
     static Mat src_bin;
-
-    cvtColor(src, src_gray, COLOR_BGR2GRAY);
+    if(src.type() == CV_8UC3)
+    {
+        cvtColor(src, src_gray, COLOR_BGR2GRAY);
+    }
 
     threshold(src_gray, src_bin, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
     //imshow("binary image", src_bin);
     std::vector<vector<Point> > light_contours;
     findContours(src_bin, light_contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+    cout<<"number of contours:"<<light_contours.size()<<endl;
     for (auto &light_contour : light_contours) {
         if(!isValidLightContour(light_contour))
         {

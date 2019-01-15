@@ -23,6 +23,8 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
             target_found_frame_cnt = 0;
         }
         if(target_found_frame_cnt > state_machine_param_.THRESHOLD_FOUND_SEARCHING_TO_TRACKING){
+            trackInit(kcf_tracker_left_, src_left, armor_box_left_);
+            trackInit(kcf_tracker_right_, src_right, armor_box_right_);
             transferState(TRACKING_TARGET);
         }
     }

@@ -62,14 +62,6 @@ int main()
 
         while (video->read(src_left, src_right))
         {
-            imshow("left", src_left);
-            imshow("right", src_right);
-
-//            if(!from_camera)
-//            {
-//                cvtColor(src_left, src_left, COLOR_BGR2GRAY);
-//                cvtColor(src_right, src_right, COLOR_BGR2GRAY);
-//            }
             armor_finder.run(src_left, src_right);
             waitKey(1);
 
