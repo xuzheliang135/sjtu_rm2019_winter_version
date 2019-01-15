@@ -51,7 +51,7 @@ int main()
             continue;
         }
 
-
+        // ddd
         Mat src_left, src_right;
 
         ArmorFinder armor_finder;
