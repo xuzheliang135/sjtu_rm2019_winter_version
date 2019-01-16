@@ -19,9 +19,13 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
         src_right_ = src_blue1 - src_red1;
     }
 
+    // following two lines are used when it is video files
+//    src_left_ = src_left.clone();
+//    src_right_ = src_right.clone();
+
     if(cur_state_ == STAND_BY)
     {
-        //stateStandBy();
+        stateStandBy();
         transferState(SEARCHING_TARGET);
     }
     else if(cur_state_ == SEARCHING_TARGET)
