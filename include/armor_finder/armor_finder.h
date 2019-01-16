@@ -95,6 +95,8 @@ private:
 
     void splitBayerBG(cv::Mat &src, cv::Mat &blue, cv::Mat &red);
 
+    void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right);
+
 public:
 
     void ispPipline(cv::Mat &src);

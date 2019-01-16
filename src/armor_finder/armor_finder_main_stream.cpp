@@ -7,21 +7,7 @@ using std::endl;
 
 int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
 
-    splitBayerBG(src_left, src_blue0, src_red0);
-    splitBayerBG(src_right, src_blue1, src_red1);
-
-    if(enemy_color_ == ENEMY_RED)
-    {
-        src_left_ = src_red0 - src_blue0;
-        src_right_ = src_red1 - src_blue1;
-    }else if(enemy_color_ == ENEMY_BLUE){
-        src_left_ = src_blue0 - src_red0;
-        src_right_ = src_blue1 - src_red1;
-    }
-
-    // following two lines are used when it is video files
-    src_left_ = src_left.clone();
-    src_right_ = src_right.clone();
+    imagePreprocess(src_left, src_right);   // to split blue and red
 
     if(cur_state_ == STAND_BY)
     {

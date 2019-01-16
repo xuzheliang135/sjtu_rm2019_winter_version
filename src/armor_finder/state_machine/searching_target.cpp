@@ -23,7 +23,6 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     if(!(state_left && state_right)) {return false;}
     showArmorBox("armor boxes", src_left, armor_box_left_, src_right, armor_box_right_);
 
-//    std::cout<<"running till here"<<std::endl;
 
     /********************** convert to 3d coordinate *********************************/
     //convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
