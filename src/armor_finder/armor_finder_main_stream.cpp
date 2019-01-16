@@ -20,8 +20,8 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
     }
 
     // following two lines are used when it is video files
-//    src_left_ = src_left.clone();
-//    src_right_ = src_right.clone();
+    src_left_ = src_left.clone();
+    src_right_ = src_right.clone();
 
     if(cur_state_ == STAND_BY)
     {
