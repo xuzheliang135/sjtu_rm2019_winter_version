@@ -26,7 +26,7 @@ bool ArmorFinder::findLightBlob(const cv::Mat &src, vector<LightBlob> &light_blo
     }
 
     threshold(src_gray, src_bin, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-    //imshow("binary image", src_bin);
+
     std::vector<vector<Point> > light_contours;
     findContours(src_bin, light_contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
     //cout<<"number of contours:"<<light_contours.size()<<endl;

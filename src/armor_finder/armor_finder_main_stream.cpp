@@ -6,8 +6,14 @@ using std::cout;
 using std::endl;
 
 int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
+    src_raw_left_ = src_left.clone();
+    src_raw_right_ = src_right.clone();
+
+    showTwoImages("before split",src_raw_left_, src_raw_right_);
 
     imagePreprocess(src_left, src_right);   // to split blue and red
+
+    showTwoImages("after split ", src_left_, src_right_);
 
     if(cur_state_ == STAND_BY)
     {
