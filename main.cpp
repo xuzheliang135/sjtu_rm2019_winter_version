@@ -65,7 +65,7 @@ int main()
         {
          
             armor_finder.run(src_left, src_right);
-            waitKey(100);
+            waitKey(1);
 
         }
         delete video;
