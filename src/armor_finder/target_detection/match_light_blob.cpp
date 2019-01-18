@@ -1,4 +1,6 @@
 
+#include <armor_finder/armor_finder.h>
+
 #include "armor_finder/armor_finder.h"
 
 using namespace cv;

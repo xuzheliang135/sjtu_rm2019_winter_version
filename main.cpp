@@ -13,6 +13,8 @@
 #include "camera/video_wrapper.h"
 #include "camera/wrapper_head.h"
 
+#include "tools/calibrate_tool.cpp"
+
 
 #include <time.h>
 

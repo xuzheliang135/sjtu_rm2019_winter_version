@@ -47,6 +47,7 @@ private:
     ArmorSeekingParam armor_seeking_param_;
     ArmorPridictParam armor_predict_param_;
     StateMachineParam state_machine_param_;
+    CalibrateParam calibrate_param_;
 
     std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
     cv::Rect2d armor_box_left_, armor_box_right_;
@@ -78,6 +79,11 @@ public:
     void setEnemyColor(int color);
 
 private:
+
+    void initCalibrateParam();
+
+    void calibrate(cv::Mat &src_left, cv::Mat &src_right);
+
     void initLightParam();
 
     void initLightCoupleParam();

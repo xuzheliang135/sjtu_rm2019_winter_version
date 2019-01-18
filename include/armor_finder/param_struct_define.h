@@ -76,5 +76,10 @@ struct StateMachineParam{
     int THRESHOLD_UNFOUND_TRACKING_TO_SEARCHING;
 };
 
+struct CalibrateParam{
+    bool isAvailable;
+    cv::Mat map11, map12, map21, map22;
+};
+
 
 #endif //STEREOVISION_PARAM_DEFINE_H

@@ -7,7 +7,8 @@ SET(CMAKE_BUILD_TYPE DEBUG)
 FIND_PACKAGE(OpenCV 3 REQUIRED)
 
 include_directories( ${PROJECT_SOURCE_DIR}/include)
-include_directories( ${PROJECT_SOURCE_DIR}/src)
+include_directories( ${PROJECT_SOURCE_DIR}/tools)
+
 FILE(GLOB_RECURSE sourcefiles "src/*.cpp" )
 
 add_executable(run main.cpp ${sourcefiles})

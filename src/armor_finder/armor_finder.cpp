@@ -53,5 +53,4 @@ void ArmorFinder::splitBayerBG(cv::Mat &src, cv::Mat &blue, cv::Mat &red) {
             bayer_data[1][j] = *data;
         }
     }
-
 }
