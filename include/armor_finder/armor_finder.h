@@ -69,6 +69,11 @@ private:
     cv::Mat src_bin_left_, src_bin_right_;
 
     int enemy_color_;
+
+    double total_contour_area_right_;
+    double total_contour_area_left_;
+    float TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
+
 public:
     void setEnemyColor(int color);
 

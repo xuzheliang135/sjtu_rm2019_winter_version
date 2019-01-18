@@ -14,5 +14,3 @@ add_executable(run main.cpp ${sourcefiles})
 
 TARGET_LINK_LIBRARIES(run  ${OpenCV_LIBS})
 TARGET_LINK_LIBRARIES(run  /lib/libMVSDK.so)
-
-

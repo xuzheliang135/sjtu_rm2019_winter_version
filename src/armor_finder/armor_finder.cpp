@@ -26,6 +26,10 @@ ArmorFinder::ArmorFinder():
     cur_state_ = SEARCHING_TARGET;
     target_found_frame_cnt = 0;
     target_unfound_frame_cnt = 0;
+
+    enemy_color_ = ENEMY_RED;
+    total_contour_area_left_ = 0;
+    total_contour_area_right_ = 0;
 }
 
 

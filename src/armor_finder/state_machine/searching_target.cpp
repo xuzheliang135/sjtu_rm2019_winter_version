@@ -54,8 +54,10 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     state_right = matchLightBlob(light_blobs_right_, armor_box_right_);
     if(!(state_left && state_right)) {return false;}
     showArmorBox("armor boxes", src_left, armor_box_left_, src_right, armor_box_right_);
+    total_contour_area_left_ = armor_box_left_.area();
+    total_contour_area_right_ = armor_box_right_.area();
 
-    return false;
+    return true;
 
 
     /********************** convert to 3d coordinate *********************************/

@@ -11,8 +11,7 @@
 
 struct LightBlob {
     cv::RotatedRect rect;
-    std::vector<cv::Point> contour;
-    explicit LightBlob(std::vector<cv::Point> &c) : contour(c) {
+    explicit LightBlob(std::vector<cv::Point> &c) {
         rect = minAreaRect(c);
     };
     bool operator<(LightBlob &l2) { return this->rect.center.x < l2.rect.center.x; }
@@ -76,8 +75,6 @@ struct StateMachineParam{
     int THRESHOLD_FOUND_SEARCHING_TO_TRACKING;
     int THRESHOLD_UNFOUND_TRACKING_TO_SEARCHING;
 };
-
-
 
 
 #endif //STEREOVISION_PARAM_DEFINE_H

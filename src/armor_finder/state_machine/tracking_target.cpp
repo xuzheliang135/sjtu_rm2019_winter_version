@@ -2,12 +2,21 @@
 
 using namespace cv;
 
+
 bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
-    std::cout<<"dive into tracking"<<std::endl;
     /********************** tracking ***********************************************/
     track(kcf_tracker_left_, src_left, armor_box_left_);
     track(kcf_tracker_right_, src_right, armor_box_right_);
+    Mat roi_left = src_left.clone()(armor_box_left_);
+    Mat roi_right = src_right.clone()(armor_box_right_);
+    threshold(roi_left, roi_left, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+    threshold(roi_right, roi_right, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+    if(countNonZero(roi_left) < TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_left_ ||
+        countNonZero(roi_right) < TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_right_ ){
+        return false;
+    }
+
     showArmorBox("tracking boxes", src_left, armor_box_left_, src_right, armor_box_right_);
 
     /********************** convert to 3d coordinate *********************************/
@@ -20,7 +29,6 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
     /******************** predict the armor moving path *******************************/
     //predictArmorPosition(armor_space_position_, armor_predicted_position_);
-
 
 
     /*********************** send position by uart **************************************/
