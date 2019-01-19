@@ -70,8 +70,12 @@ int main()
             //armor_finder.run(src_left, src_right);
             armor_finder.showTwoImages("raw image", src_left, src_right);
             if(tool_for_calibrate(src_left, src_right))
+            {
                 waitKey(0);
-            waitKey(1000);
+                return 0;
+            }
+
+            waitKey(1);
         }
         delete video;
         cout<<"Program fails. Restarting"<<endl;

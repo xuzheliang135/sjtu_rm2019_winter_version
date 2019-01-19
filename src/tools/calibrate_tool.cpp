@@ -296,7 +296,7 @@ bool tool_for_calibrate(const cv::Mat &src_left, const cv::Mat &src_right){
         cout<<"collecting done"<<endl;
         cout<<"start calibrating..."<<endl;
         Size boardSize(9,7);
-        float squareSize = 2.84;
+        float squareSize = 28.4;
         string filename_intrinsics_param = "../extra_files/camera_calibration_parameter/intrinsics.yml";
         string filename_extrinsics_param = "../extra_files/camera_calibration_parameter/extrinsics.yml";
         StereoCalib(imagelist, boardSize, squareSize, filename_intrinsics_param, filename_extrinsics_param, true, true, true);
