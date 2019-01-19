@@ -6,8 +6,6 @@
 using namespace cv;
 using namespace std;
 
-#define INTER_LINEAR_EXACT 5
-
 
 static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float squareSize,
         string &filename_intrinsics_param, string &filename_extrinsics_param,  bool displayCorners = true,
