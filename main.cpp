@@ -13,8 +13,6 @@
 #include "camera/video_wrapper.h"
 #include "camera/wrapper_head.h"
 
-#include "tools/calibrate_tool.h"
-
 
 #include <time.h>
 
@@ -30,12 +28,12 @@ using std::string;
 int main()
 {
     int enemy_color = ENEMY_RED;
+    int from_camera = 1;
+    cout << "Input 1 for camera, 0 for video files" << endl;
+    cin >> from_camera;
 
-    while(true)
-    {
-        int from_camera = 1;
-        cout<<"Input 1 for camera, 0 for video files"<<endl;
-        cin>>from_camera;
+    while (true) {
+
         //from_camera = waitKey(1000);
 
         WrapperHead *video;
@@ -59,20 +57,23 @@ int main()
 
         ArmorFinder armor_finder;
         armor_finder.setEnemyColor(enemy_color);
-
+        cout<<"start working"<<endl;
 
         for(int i = 0; i < 10; i++) video->read(src_left, src_right);
 
-        cout<<"start working"<<endl;
         while (video->read(src_left, src_right))
         {
-            //armor_finder.run(src_left, src_right);
-            armor_finder.showTwoImages("raw image", src_left, src_right);
+            if (!from_camera) {
+                cvtColor(src_left, src_left, COLOR_BGR2GRAY);
+                cvtColor(src_right, src_right, COLOR_BGR2GRAY);
+            }
+            armor_finder.run(src_left, src_right);
+            waitKey(100);
 
-
-            waitKey(1);
         }
         delete video;
         cout<<"Program fails. Restarting"<<endl;
+
     }
+    return 0;
 }
