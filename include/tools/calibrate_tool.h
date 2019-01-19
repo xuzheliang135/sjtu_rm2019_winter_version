@@ -8,8 +8,10 @@
  * {
  *      //get a frame of src_left and src_right
  *      if(tool_for_calibrate(src_left, src_right))
+ *      {
+ *          waitKey(0);
  *          break;
- *      waitKey(500);
+ *      }
  * }
  *
  *
