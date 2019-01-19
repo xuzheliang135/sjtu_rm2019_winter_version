@@ -1,27 +1,7 @@
-/**
- * this file contains a tool to calibrate stereo cameras
- *
- * usage:
- * tool_for_calibrate(vector<Mat> image_list)
- *
- * output parameter file should be in "../extra_file/camera_calibration_parameter/"
- */
 
 
-#include "opencv2/calib3d.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/opencv.hpp"
+#include "tools/calibrate_tool.h"
 
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
 
 using namespace cv;
 using namespace std;
@@ -30,7 +10,7 @@ using namespace std;
 
 
 static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float squareSize,
-        string &filename_intrinsics_param, string &filename_extrinsics_param,  bool displayCorners = false,
+        string &filename_intrinsics_param, string &filename_extrinsics_param,  bool displayCorners = true,
         bool useCalibrated=true, bool showRectified=true)
 {
     if( imagelist.size() % 2 != 0 )
@@ -55,9 +35,10 @@ static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float 
 
     for( i = j = 0; i < nimages; i++ )
     {
+        cout<<i<<"/"<<nimages<<endl;
         for( k = 0; k < 2; k++ )
         {
-           ;
+
             Mat img = imagelist[i*2+k].clone();
             if(img.empty())
                 break;
@@ -76,7 +57,7 @@ static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float 
                 if( scale == 1 )
                     timg = img;
                 else
-                    resize(img, timg, Size(), scale, scale, INTER_LINEAR_EXACT);
+                    resize(img, timg, Size(), scale, scale, INTER_LINEAR);
                 found = findChessboardCorners(timg, boardSize, corners,
                                               CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_NORMALIZE_IMAGE);
                 if( found )
@@ -95,7 +76,7 @@ static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float 
                 cvtColor(img, cimg, COLOR_GRAY2BGR);
                 drawChessboardCorners(cimg, boardSize, corners, found);
                 double sf = 640./MAX(img.rows, img.cols);
-                resize(cimg, cimg1, Size(), sf, sf, INTER_LINEAR_EXACT);
+                resize(cimg, cimg1, Size(), sf, sf, INTER_LINEAR);
                 imshow("corners", cimg1);
                 char c = (char)waitKey(500);
                 if( c == 27 || c == 'q' || c == 'Q' ) //Allow ESC to quit
@@ -111,8 +92,8 @@ static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float 
         }
         if( k == 2 )
         {
-            goodImageList.push_back(imagelist[i*2]);
-            goodImageList.push_back(imagelist[i*2+1]);
+            goodImageList.push_back(imagelist[i*2].clone());
+            goodImageList.push_back(imagelist[i*2+1].clone());
             j++;
         }
     }
@@ -193,6 +174,7 @@ static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float 
         fs << "M1" << cameraMatrix[0] << "D1" << distCoeffs[0] <<
            "M2" << cameraMatrix[1] << "D2" << distCoeffs[1];
         fs.release();
+        cout<<"save intrinsic parameter successfully"<<endl;
     }
     else
         cout << "Error: can not save the intrinsic parameters\n";
@@ -210,6 +192,7 @@ static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float 
     {
         fs << "R" << R << "T" << T << "R1" << R1 << "R2" << R2 << "P1" << P1 << "P2" << P2 << "Q" << Q;
         fs.release();
+        cout<<"save extrinsic parameter successfully"<<endl;
     }
     else
         cout << "Error: can not save the extrinsic parameters\n";
@@ -277,6 +260,7 @@ static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float 
         {
             Mat img = goodImageList[i*2+k], rimg, cimg;
             remap(img, rimg, rmap[k][0], rmap[k][1], INTER_LINEAR);
+
             cvtColor(rimg, cimg, COLOR_GRAY2BGR);
             Mat canvasPart = !isVerticalStereo ? canvas(Rect(w*k, 0, w, h)) : canvas(Rect(0, h*k, w, h));
             resize(cimg, canvasPart, canvasPart.size(), 0, 0, INTER_AREA);
@@ -295,36 +279,31 @@ static void StereoCalib(const vector<cv::Mat> &imagelist, Size boardSize, float 
             for( j = 0; j < canvas.cols; j += 16 )
                 line(canvas, Point(j, 0), Point(j, canvas.rows), Scalar(0, 255, 0), 1, 8);
         imshow("rectified", canvas);
-        char c = (char)waitKey();
-        if( c == 27 || c == 'q' || c == 'Q' )
-            break;
+        waitKey(500);
+
     }
 }
 
 
-static bool readStringList( const string& filename, vector<string>& l )
-{
-    l.resize(0);
-    FileStorage fs(filename, FileStorage::READ);
-    if( !fs.isOpened() )
+bool tool_for_calibrate(const cv::Mat &src_left, const cv::Mat &src_right){
+    static vector<Mat> imagelist;
+    int image_max_num = 30;
+    if(imagelist.size() < image_max_num){
+        imagelist.push_back(src_left.clone());
+        imagelist.push_back(src_right.clone());
+        cout<<"collecting "<<imagelist.size()<<"/"<<image_max_num<<" images now, keep moving"<<endl;
         return false;
-    FileNode n = fs.getFirstTopLevelNode();
-    if( n.type() != FileNode::SEQ )
-        return false;
-    FileNodeIterator it = n.begin(), it_end = n.end();
-    for( ; it != it_end; ++it )
-        l.push_back((string)*it);
-    return true;
-}
-
-
-void tool_for_calibrate(const vector<cv::Mat> &imagelist){
-
-    Size boardSize(9,7);
-    float squareSize = 2.84;
-
-    string filename_intrinsics_param = "../extra_files/camera_calibration_parameter/intrinsics.yml";
-    string filename_extrinsics_param = "../extra_files/camera_calibration_parameter/extrinsics.yml";
-
-    StereoCalib(imagelist, boardSize, squareSize, filename_intrinsics_param, filename_extrinsics_param, true, true, true);
+    }
+    else{
+        cout<<"collecting done"<<endl;
+        cout<<"start calibrating..."<<endl;
+        Size boardSize(9,7);
+        float squareSize = 2.84;
+        string filename_intrinsics_param = "../extra_files/camera_calibration_parameter/intrinsics.yml";
+        string filename_extrinsics_param = "../extra_files/camera_calibration_parameter/extrinsics.yml";
+        StereoCalib(imagelist, boardSize, squareSize, filename_intrinsics_param, filename_extrinsics_param, true, true, true);
+        imagelist.clear();
+        cout<<"calibrate done"<<endl;
+        return true;
+    }
 }

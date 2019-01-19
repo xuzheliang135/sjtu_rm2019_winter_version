@@ -13,7 +13,7 @@
 #include "camera/video_wrapper.h"
 #include "camera/wrapper_head.h"
 
-#include "tools/calibrate_tool.cpp"
+#include "tools/calibrate_tool.h"
 
 
 #include <time.h>
@@ -59,20 +59,21 @@ int main()
 
         ArmorFinder armor_finder;
         armor_finder.setEnemyColor(enemy_color);
-        cout<<"start working"<<endl;
+
+
 
         for(int i = 0; i < 10; i++) video->read(src_left, src_right);
-
+        waitKey(1000);
+        cout<<"start working"<<endl;
         while (video->read(src_left, src_right))
         {
-         
-            armor_finder.run(src_left, src_right);
-            waitKey(1);
-
+            //armor_finder.run(src_left, src_right);
+            armor_finder.showTwoImages("raw image", src_left, src_right);
+            if(tool_for_calibrate(src_left, src_right))
+                return 0;
+            waitKey(1000);
         }
         delete video;
         cout<<"Program fails. Restarting"<<endl;
-
     }
-    return 0;
 }
