@@ -66,7 +66,6 @@ private:
     KCFTracker kcf_tracker_left_, kcf_tracker_right_;
 
     cv::Mat src_blue0, src_red0, src_blue1, src_red1;
-    cv::Mat src_left_, src_right_;
     cv::Mat src_raw_left_, src_raw_right_;
     cv::Mat src_bin_left_, src_bin_right_;
 
