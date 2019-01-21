@@ -39,6 +39,7 @@ public:
      */
     int run(cv::Mat &src_left, cv::Mat &src_right);
     cv::Mat frame_to_display;
+    cv::Mat src_left_, src_right_;
 
 private:
     LightBlobParam light_blob_param_;
@@ -85,6 +86,8 @@ private:
     void calibrate(cv::Mat &src_left, cv::Mat &src_right);
 
     void initLightParam();
+
+    void replace_img(cv::Mat &src, cv::Mat &origin, vector<LightBlob> &light_blobs);
 
     void initLightCoupleParam();
 
@@ -133,6 +136,8 @@ public:
      * @return  bool value: whether it finds a armor box
      */
     bool matchLightBlob(std::vector<LightBlob> &light_blobs, cv::Rect2d &armor_box);
+
+    bool matchLightBlobVector(std::vector<LightBlob> &light_blobs, vector<cv::Rect2d> &armor_box);
 
 public:
     /**
@@ -191,6 +196,8 @@ public:
     void showArmorBox(std::string windows_name, const cv::Mat &src_left, const cv::Rect2d &armor_box_left,
             const cv::Mat &src_right, const cv::Rect2d &armor_box_right);
 
+    void showArmorBoxVector(std::string windows_name, const cv::Mat &src_left, const vector<cv::Rect2d> &armor_box_left,
+                            const cv::Mat &src_right, const vector<cv::Rect2d> &armor_box_right);
 
     void showSpacePositionBackToStereoVision(
             const cv::Mat &src_left, const cv::Mat &src_right, const cv::Point3d &space_position);
