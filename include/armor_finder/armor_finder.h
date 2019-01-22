@@ -19,6 +19,7 @@
 #include <uart/uart.h>
 #include <tracker/kcftracker.hpp>
 #include "tracker/tracker.h"
+#include "predictor/predictor_curve_fitting.h"
 
 using std::vector;
 
@@ -37,9 +38,10 @@ public:
      * @param src_right : input
      * @return : bool value: whether it success.
      */
+    cv::Mat src_left_, src_right_;
+
     int run(cv::Mat &src_left, cv::Mat &src_right);
 
-    cv::Mat src_left_, src_right_;
 public:
     cv::Mat frame_to_display;
 private:
@@ -50,14 +52,20 @@ private:
     ArmorPridictParam armor_predict_param_;
     StateMachineParam state_machine_param_;
     CalibrateParam calibrate_param_;
+
+    std::vector<LightBlob> light_blobs_left_light, light_blobs_right_light;
+    std::vector<LightBlob> light_blobs_left_color, light_blobs_right_color;
+    std::vector<LightBlob> light_blobs_left_real, light_blobs_right_real;
+    cv::Rect2d armor_box_left_, armor_box_right_;
+
+    cv::Point3d armor_space_position_;
     TrackingParam track_param_;
 
     std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
-    cv::Rect2d armor_box_left_, armor_box_right_;
-    cv::Point3d armor_space_position_;
     cv::Point3d armor_space_last_position_;
     std::vector<cv::Point3d> armor_history_positions_;
     cv::Point3d armor_predicted_position_;
+
 
     int target_found_frame_cnt, target_unfound_frame_cnt;
     StateMachine cur_state_;
@@ -69,7 +77,6 @@ private:
     KCFTracker kcf_tracker_left_, kcf_tracker_right_;
 
     cv::Mat src_blue0, src_red0, src_blue1, src_red1;
-
     cv::Mat src_raw_left_, src_raw_right_;
     cv::Rect2d armor_box_on_raw_left_, armor_box_on_raw_right_;
     cv::Mat src_bin_left_, src_bin_right_;
@@ -79,9 +86,21 @@ private:
     double total_contour_area_right_;
     double total_contour_area_left_;
 
+    CurveFitting curve_fitting_;
+    cv::Point3d armor_space_position_;
+    cv::Point3d armor_space_last_position_;
+    std::vector<cv::Point3d> armor_history_positions_;
+    cv::Point3d armor_predicted_position_;
+    std::vector<clock_t> time_serial;
+    clock_t oldest_time_stamp;
+
+
 public:
     void setEnemyColor(int color);
     void calibrate(cv::Mat &src_left, cv::Mat &src_right);
+    float TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
+
+
 private:
 
     void initCalibrateParam();
@@ -90,7 +109,6 @@ private:
 
     void initLightParam();
 
-    void replace_img(cv::Mat &src, cv::Mat &origin, vector<LightBlob> &light_blobs);
 
     void initLightCoupleParam();
 
@@ -119,6 +137,9 @@ private:
     void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right);
 
 public:
+
+    void clear_light_blobs_vector();
+    cv::Mat getNumberPic(cv::Mat &src, const cv::Rect &rect);
 
     void ispPipline(cv::Mat &src);
 

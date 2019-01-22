@@ -3,146 +3,185 @@
 using namespace cv;
 using namespace std;
 
-cv::Rect normalize(cv::Rect roi) {
-    roi.width *= 2;
-    roi.height *= 2;
-    if ((roi.x + roi.width) > 320)roi.width = 320 - roi.x;
-    if (roi.y + roi.height > 240)roi.height = 240 - roi.y;
-    if (roi.x < 0)roi.x = 0;
-    if (roi.y < 0)roi.y = 0;
-    if (roi.height <= 0)roi.height = 1;
-    if (roi.width <= 0)roi.width = 1;
-    return roi;
+//double leastSquare1(const LightBlob &light_blob) {
+//    double x_average = 0, y_average = 0, x_squa_average = 0, x_y_average = 0;
+//    for (auto &point:light_blob.contours) {
+//        x_average += point.x;
+//        y_average += point.y;
+//        x_squa_average += point.x * point.x;
+//        x_y_average += point.x * point.y;
+//    }
+//    x_average /= light_blob.contours.size();
+//    y_average /= light_blob.contours.size();
+//    x_squa_average /= light_blob.contours.size();
+//    x_y_average /= light_blob.contours.size();
+//    return (x_y_average - x_average * y_average) / (x_squa_average - x_average * x_average);
+//
+//}
+//void drawLine(Mat &img,const LightBlob &light_blob,const Scalar &s){
+//    int length=20;
+//    double k=leastSquare1(light_blob);
+//    Point2f center(light_blob.rect.center);
+//    Point2f a(center),b(center);
+//    a.x+=length;
+//    b.x-=length;
+//    a.y+=length*k;
+//    b.y-=length*k;
+//    line(img,a,b,s);
+//}
+void preprocess(Mat &src, int n, float percent) {
+    src -= n;
+    src *= percent;
+    src -= n;
+    src *= percent;
 }
 
-void ArmorFinder::replace_img(cv::Mat &src, cv::Mat &origin, vector<LightBlob> &light_blobs) {
-    Mat tmp;
-    resize(origin, tmp, Size(320, 240));
-    for (auto &a:light_blobs) {
-        Rect rect = normalize(a.rect.boundingRect());
-        tmp(rect).copyTo(src(rect));
+void drawRotatedRectangle(Mat &img, const RotatedRect &rect, const Scalar &s) {
+    Point2f points[4];
+    rect.points(points);
+    for (int i = 0; i < 3; i++)line(img, points[i], points[i + 1], s);
+    line(img, points[3], points[0], s);
+}
+
+void ArmorFinder::clear_light_blobs_vector() {
+    light_blobs_right_light.clear();
+    light_blobs_left_light.clear();
+
+    light_blobs_right_color.clear();
+    light_blobs_left_color.clear();
+
+    light_blobs_right_real.clear();
+    light_blobs_left_real.clear();
+}
+
+void judge_light_color(vector<LightBlob> &light, vector<LightBlob> &color, vector<LightBlob> &result) {
+    for (auto &i:color) {
+        for (auto &j:light) {
+            Rect2d a = i.rect.boundingRect2f();
+            Rect2d b = j.rect.boundingRect2f();
+            Rect2d ab = a & b;
+            if (ab.area() / min(a.area(), b.area()) >= 0.2) {
+                result.emplace_back(j);
+                break;
+            }
+        }
     }
 }
 
-void drawRotatedRectangle(Mat &img, const RotatedRect &rect) {
-    Point2f points[4];
-    rect.points(points);
-    for (int i = 0; i < 3; i++)line(img, points[i], points[i + 1], Scalar(255, 0, 0));
-    line(img, points[3], points[0], Scalar(255, 0, 0));
-}
-
-bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
-
-
+void preprocessColor(cv::Mat &src_left, cv::Mat &src_right) {
     static Mat kernel_erode = getStructuringElement(MORPH_RECT, Size(1, 4));
     erode(src_left, src_left, kernel_erode);
     erode(src_right, src_right, kernel_erode);
-    //showTwoImages("erode", src_left, src_right);
 
     static Mat kernel_dilate = getStructuringElement(MORPH_RECT, Size(2, 4));
     dilate(src_left, src_left, kernel_dilate);
     dilate(src_right, src_right, kernel_dilate);
-    //showTwoImages("dilate", src_left, src_right);
-//
-//    static Mat kernel_erode2 = getStructuringElement(MORPH_RECT, Size(2, 4));
-//    erode(src_left, src_left, kernel_erode2);
-//    erode(src_right, src_right, kernel_erode2);
-//    //showTwoImages("erode2", src_left, src_right);
-//
-//    static Mat kernel_dilate2 = getStructuringElement(MORPH_RECT, Size(3, 6));
-//    dilate(src_left, src_left, kernel_dilate2);
-//    dilate(src_right, src_right, kernel_dilate2);
-//    //showTwoImages("dilate2", src_left, src_right);
+
+    static Mat kernel_erode2 = getStructuringElement(MORPH_RECT, Size(2, 4));
+    erode(src_left, src_left, kernel_erode2);
+    erode(src_right, src_right, kernel_erode2);
+
+    static Mat kernel_dilate2 = getStructuringElement(MORPH_RECT, Size(3, 6));
+    dilate(src_left, src_left, kernel_dilate2);
+    dilate(src_right, src_right, kernel_dilate2);
 
     float alpha = 1.5;
     int beta = 0;
     src_left.convertTo(src_left, -1, alpha, beta);
     src_right.convertTo(src_right, -1, alpha, beta);
-    src_left -= 30;
-    src_right -= 30;
-    src_left *= 5;
-    src_right *= 5;
-    //showTwoImages("enlighted", src_left, src_right);
+}
 
+Mat ArmorFinder::getNumberPic(Mat &src, const Rect &rect) {
+    return src(rect);
+}
 
-
-    /************* debug code ***************************************/
-    threshold(src_left, src_bin_left_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-    threshold(src_right, src_bin_right_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-    //showTwoImages("bin", src_bin_left_, src_bin_right_);
-    /*********************************************************/
-
+bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_right_light) {
     /************************** find light blobs **********************************************/
-    light_blobs_left_.clear();
-    light_blobs_right_.clear();
-    bool state_left, state_right;
-    //imshow("src_before", src_left);
-    state_left = findLightBlob(src_left, light_blobs_left_);
-    state_right = findLightBlob(src_right, light_blobs_right_);
+    imagePreprocess(src_left_light, src_right_light);
 
-//    replace_img(src_left, src_raw_left_, light_blobs_left_);
-//    replace_img(src_right, src_raw_right_, light_blobs_right_);
-//    imshow("src_after",src_left);
+    preprocess(src_left_light, 150, 3.5);
+    preprocess(src_right_light, 150, 3.5);
+    preprocessColor(src_left_, src_right_);//腐蚀，膨胀
+    showTwoImages("color_after_erode", src_left_, src_right_);
 
+    resize(src_left_, src_left_, Size(640, 480));
+    resize(src_right_, src_right_, Size(640, 480));
 
+    clear_light_blobs_vector();
 
-    if (!(state_left && state_right)) { return false; }
-    //showContours("light contours", src_left, light_blobs_left_, src_right, light_blobs_right_);
+    findLightBlob(src_left_light, light_blobs_left_light);
+    findLightBlob(src_right_light, light_blobs_right_light);
 
+    findLightBlob(src_left_, light_blobs_left_color);
+    findLightBlob(src_right_, light_blobs_right_color);
 
+    judge_light_color(light_blobs_left_light, light_blobs_left_color, light_blobs_left_real);
+    judge_light_color(light_blobs_right_light, light_blobs_right_color, light_blobs_right_real);
+
+    {
+        showTwoImages("color", src_left_, src_right_);
+        showTwoImages("light", src_left_light, src_right_light);
+
+        threshold(src_left_, src_bin_left_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+        threshold(src_right_, src_bin_right_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+        cvtColor(src_bin_left_, src_bin_left_, COLOR_GRAY2RGB);
+        cvtColor(src_bin_right_, src_bin_right_, COLOR_GRAY2RGB);
+        for (auto &a:light_blobs_left_color)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 0, 255));
+        for (auto &a:light_blobs_right_color)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 0, 255));
+        for (auto &a:light_blobs_left_light)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 255, 0));
+        for (auto &a:light_blobs_right_light)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 255, 0));
+        showTwoImages("color_bin", src_bin_left_, src_bin_right_);
+
+        threshold(src_left_light, src_bin_left_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+        threshold(src_right_light, src_bin_right_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+        cvtColor(src_bin_left_, src_bin_left_, COLOR_GRAY2RGB);
+        cvtColor(src_bin_right_, src_bin_right_, COLOR_GRAY2RGB);
+        for (auto &a:light_blobs_left_light)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 0, 255));
+        for (auto &a:light_blobs_right_light)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 0, 255));
+        showTwoImages("light_bin", src_bin_left_, src_bin_right_);
+    }//debug show
+
+//    showContours("light contours", src_left_, light_blobs_left_color, src_right_, light_blobs_right_color);
 
     /*************************** match light blobs***********************************/
-//    vector<cv::Rect2d> left, right;
-//    Mat left_show, right_show;
-//    resize(src_raw_left_, left_show, Size(320, 240));
-//    resize(src_raw_right_, right_show, Size(320, 240));
-//    cvtColor(left_show, left_show, COLOR_GRAY2RGB);
-//    cvtColor(right_show, right_show, COLOR_GRAY2RGB);
-//    for (auto &a:light_blobs_left_)drawRotatedRectangle(left_show, a.rect);
-//    for (auto &a:light_blobs_right_)drawRotatedRectangle(right_show, a.rect);
-//    resize(right_show, right_show, Size(640, 480));
-//    resize(left_show, left_show, Size(640, 480));
-//
-//    //showTwoImages("show", left_show, right_show);
-//
-//    state_left = matchLightBlobVector(light_blobs_left_, left);
-//    state_right = matchLightBlobVector(light_blobs_right_, right);
+    {
+        Mat left_show(480, 640, CV_8UC3), right_show(480, 640, CV_8UC3);
+        left_show = Scalar(0, 0, 0);//src_raw_left_.clone();
+        right_show = Scalar(0, 0, 0);//src_raw_right_.clone();
+//        cvtColor(left_show, left_show, COLOR_GRAY2RGB);
+//        cvtColor(right_show, right_show, COLOR_GRAY2RGB);
+//        for (auto &a:light_blobs_left_light)drawRotatedRectangle(left_show, a.rect, Scalar(255, 0, 0));
+//        for (auto &a:light_blobs_right_light)drawRotatedRectangle(right_show, a.rect, Scalar(255, 0, 0));
+//        for (auto &a:light_blobs_left_color)drawRotatedRectangle(left_show, a.rect, Scalar(0, 255, 0));
+//        for (auto &a:light_blobs_right_color)drawRotatedRectangle(right_show, a.rect, Scalar(0, 255, 0));
+        for (auto &a:light_blobs_left_real)drawRotatedRectangle(left_show, a.rect, Scalar(0, 0, 255));
+        for (auto &a:light_blobs_right_real)drawRotatedRectangle(right_show, a.rect, Scalar(0, 0, 255));
+//        for (auto &a:light_blobs_left_real)drawLine(left_show, a, Scalar(0, 0, 255));
+//        for (auto &a:light_blobs_right_real)drawLine(right_show, a, Scalar(0, 0, 255));
+        showTwoImages("show_rotated_Rect", left_show, right_show);
+    }//debug show
 
-    state_left = matchLightBlob(light_blobs_left_, armor_box_left_);
-    state_right = matchLightBlob(light_blobs_right_, armor_box_right_);
-
-    if(!(state_left && state_right)) {return false;}
-    //
-    //showArmorBoxVector("armor boxes", src_left, left, src_right, right);
-//    if(left.empty() || right.empty())
-//    {
-//        return false;
-//    } else{
-//        armor_box_left_ = left.at(0);
-//        armor_box_right_ = right.at(0);
-//        total_contour_area_left_ = armor_box_left_.area();
-//        total_contour_area_right_ = armor_box_right_.area();
-//    }
-
+    vector<cv::Rect2d> left, right;
+    matchLightBlobVector(light_blobs_left_real, left);
+    matchLightBlobVector(light_blobs_right_real, right);
+    showArmorBoxVector("armor boxes", src_left_light, left, src_right_light, right);
 
 
     /********************** convert to 3d coordinate *********************************/
     convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
-
-    showArmorBox("armor box", src_left, armor_box_left_, src_right, armor_box_right_);
-
 
     /********************** convert 3d coordinate back to two camera vision ***************/
     //showSpacePositionBackToStereoVision(src_left, src_right, armor_space_position_);
 
 
     /******************** predict the armor moving path *******************************/
-    //predictArmorPosition(armor_space_position_, armor_predicted_position_);
+//    predictArmorPosition(armor_space_position_, armor_predicted_position_);
 
 
 
     /*********************** send position by uart **************************************/
-    cout<<armor_space_position_<<endl;
+    cout << armor_space_position_ << endl;
+
 //    armor_space_position_.x += 5;
 //    armor_space_position_.y = armor_space_position_.y * 1.63 + 7.7;
 //    armor_space_position_.z = armor_space_position_.z * 1.24 - 42.4;
