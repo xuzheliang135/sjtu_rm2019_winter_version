@@ -175,12 +175,13 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
 
 
     /******************** predict the armor moving path *******************************/
-    //predictArmorPosition(armor_space_position_, armor_predicted_position_);
+//    predictArmorPosition(armor_space_position_, armor_predicted_position_);
 
 
 
     /*********************** send position by uart **************************************/
     cout << armor_space_position_ << endl;
+
 //    armor_space_position_.x += 5;
 //    armor_space_position_.y = armor_space_position_.y * 1.63 + 7.7;
 //    armor_space_position_.z = armor_space_position_.z * 1.24 - 42.4;

@@ -19,6 +19,7 @@
 #include <uart/uart.h>
 #include <tracker/kcftracker.hpp>
 #include "tracker/tracker.h"
+#include "predictor/predictor_curve_fitting.h"
 
 using std::vector;
 
@@ -56,6 +57,7 @@ private:
     std::vector<LightBlob> light_blobs_left_color, light_blobs_right_color;
     std::vector<LightBlob> light_blobs_left_real, light_blobs_right_real;
     cv::Rect2d armor_box_left_, armor_box_right_;
+
     cv::Point3d armor_space_position_;
     TrackingParam track_param_;
 
@@ -63,6 +65,7 @@ private:
     cv::Point3d armor_space_last_position_;
     std::vector<cv::Point3d> armor_history_positions_;
     cv::Point3d armor_predicted_position_;
+
 
     int target_found_frame_cnt, target_unfound_frame_cnt;
     StateMachine cur_state_;
@@ -82,6 +85,15 @@ private:
 
     double total_contour_area_right_;
     double total_contour_area_left_;
+
+    CurveFitting curve_fitting_;
+    cv::Point3d armor_space_position_;
+    cv::Point3d armor_space_last_position_;
+    std::vector<cv::Point3d> armor_history_positions_;
+    cv::Point3d armor_predicted_position_;
+    std::vector<clock_t> time_serial;
+    clock_t oldest_time_stamp;
+
 
 public:
     void setEnemyColor(int color);

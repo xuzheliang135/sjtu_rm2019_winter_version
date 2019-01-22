@@ -61,7 +61,7 @@ struct ArmorSeekingParam{
 
 struct ArmorPridictParam{
     int ARMOR_POSITION_HISTORY_MAX_LENGTH;
-
+    clock_t time_predict;
 };
 
 enum ArmorType {
