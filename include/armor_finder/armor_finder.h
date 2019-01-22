@@ -37,12 +37,10 @@ public:
      * @param src_right : input
      * @return : bool value: whether it success.
      */
-    cv::Mat frame_to_display;
     cv::Mat src_left_, src_right_;
 
     int run(cv::Mat &src_left, cv::Mat &src_right);
 
-    cv::Mat src_left_, src_right_;
 public:
     cv::Mat frame_to_display;
 private:
@@ -62,8 +60,6 @@ private:
     TrackingParam track_param_;
 
     std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
-    cv::Rect2d armor_box_left_, armor_box_right_;
-    cv::Point3d armor_space_position_;
     cv::Point3d armor_space_last_position_;
     std::vector<cv::Point3d> armor_history_positions_;
     cv::Point3d armor_predicted_position_;
@@ -92,8 +88,6 @@ public:
     void calibrate(cv::Mat &src_left, cv::Mat &src_right);
     float TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
 
-public:
-    void setEnemyColor(int color);
 
 private:
 
@@ -103,7 +97,6 @@ private:
 
     void initLightParam();
 
-    void replace_img(cv::Mat &src, cv::Mat &origin, vector<LightBlob> &light_blobs);
 
     void initLightCoupleParam();
 
@@ -133,7 +126,6 @@ private:
 
 public:
 
-    bool stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_right_light);
     void clear_light_blobs_vector();
     cv::Mat getNumberPic(cv::Mat &src, const cv::Rect &rect);
 

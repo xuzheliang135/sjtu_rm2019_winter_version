@@ -1,6 +1,8 @@
 #include "armor_finder/armor_finder.h"
+
 using namespace cv;
 using namespace std;
+
 //double leastSquare1(const LightBlob &light_blob) {
 //    double x_average = 0, y_average = 0, x_squa_average = 0, x_y_average = 0;
 //    for (auto &point:light_blob.contours) {
@@ -34,37 +36,6 @@ void preprocess(Mat &src, int n, float percent) {
     src *= percent;
 }
 
-void ArmorFinder::imagePreprocess(cv::Mat &src_left, cv::Mat &src_right) {
-    if (src_left.type() == CV_8UC1) {
-        splitBayerBG(src_left, src_blue0, src_red0);
-        splitBayerBG(src_right, src_blue1, src_red1);
-        if (enemy_color_ == ENEMY_RED) {
-            src_left_ = src_red0 - src_blue0;
-            src_right_ = src_red1 - src_blue1;
-        } else if (enemy_color_ == ENEMY_BLUE) {
-            src_left_ = src_blue0 - src_red0;
-            src_right_ = src_blue1 - src_red1;
-        }
-
-    } else if (src_left.type() == CV_8UC3) {
-        std::vector<Mat> channels_left, channels_right;
-        split(src_left, channels_left);
-        split(src_right, channels_right);
-        resize(channels_left.at(0), src_blue0, Size(SRC_WIDTH, SRC_HEIGHT));
-        resize(channels_left.at(2), src_red0, Size(SRC_WIDTH, SRC_HEIGHT));
-        resize(channels_right.at(0), src_blue1, Size(SRC_WIDTH, SRC_HEIGHT));
-        resize(channels_right.at(2), src_red1, Size(SRC_WIDTH, SRC_HEIGHT));
-        if (enemy_color_ == ENEMY_RED) {
-            src_left_ = src_red0;
-            src_right_ = src_red1;
-        } else if (enemy_color_ == ENEMY_BLUE) {
-            src_left_ = src_blue0;
-            src_right_ = src_blue1;
-        }
-    }
-
-}
-
 void drawRotatedRectangle(Mat &img, const RotatedRect &rect, const Scalar &s) {
     Point2f points[4];
     rect.points(points);
@@ -86,10 +57,10 @@ void ArmorFinder::clear_light_blobs_vector() {
 void judge_light_color(vector<LightBlob> &light, vector<LightBlob> &color, vector<LightBlob> &result) {
     for (auto &i:color) {
         for (auto &j:light) {
-            Rect2d a=i.rect.boundingRect2f();
-            Rect2d b=j.rect.boundingRect2f();
-            Rect2d ab=a&b;
-            if(ab.area()/min(a.area(),b.area())>=0.2){
+            Rect2d a = i.rect.boundingRect2f();
+            Rect2d b = j.rect.boundingRect2f();
+            Rect2d ab = a & b;
+            if (ab.area() / min(a.area(), b.area()) >= 0.2) {
                 result.emplace_back(j);
                 break;
             }
@@ -97,7 +68,7 @@ void judge_light_color(vector<LightBlob> &light, vector<LightBlob> &color, vecto
     }
 }
 
-void tmp(cv::Mat &src_left, cv::Mat &src_right) {
+void preprocessColor(cv::Mat &src_left, cv::Mat &src_right) {
     static Mat kernel_erode = getStructuringElement(MORPH_RECT, Size(1, 4));
     erode(src_left, src_left, kernel_erode);
     erode(src_right, src_right, kernel_erode);
@@ -126,14 +97,11 @@ Mat ArmorFinder::getNumberPic(Mat &src, const Rect &rect) {
 
 bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_right_light) {
     /************************** find light blobs **********************************************/
-    src_raw_left_ = src_left_light.clone();
-    src_raw_right_ = src_right_light.clone();
-
     imagePreprocess(src_left_light, src_right_light);
 
     preprocess(src_left_light, 150, 3.5);
     preprocess(src_right_light, 150, 3.5);
-    tmp(src_left_, src_right_);//腐蚀，膨胀
+    preprocessColor(src_left_, src_right_);//腐蚀，膨胀
     showTwoImages("color_after_erode", src_left_, src_right_);
 
     resize(src_left_, src_left_, Size(640, 480));
@@ -199,11 +167,8 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
     showArmorBoxVector("armor boxes", src_left_light, left, src_right_light, right);
 
 
-     /********************** convert to 3d coordinate *********************************/
+    /********************** convert to 3d coordinate *********************************/
     convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
-
-    showArmorBox("armor box", src_left, armor_box_left_, src_right, armor_box_right_);
-
 
     /********************** convert 3d coordinate back to two camera vision ***************/
     //showSpacePositionBackToStereoVision(src_left, src_right, armor_space_position_);
@@ -215,7 +180,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
 
 
     /*********************** send position by uart **************************************/
-    cout<<armor_space_position_<<endl;
+    cout << armor_space_position_ << endl;
 //    armor_space_position_.x += 5;
 //    armor_space_position_.y = armor_space_position_.y * 1.63 + 7.7;
 //    armor_space_position_.z = armor_space_position_.z * 1.24 - 42.4;
