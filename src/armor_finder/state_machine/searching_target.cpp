@@ -33,7 +33,6 @@ void drawRotatedRectangle(Mat &img, const RotatedRect &rect) {
 
 bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
-    //sendTargetByUart(0, 0, 0);        // used to output fps
 
     static Mat kernel_erode = getStructuringElement(MORPH_RECT, Size(1, 4));
     erode(src_left, src_left, kernel_erode);
@@ -44,16 +43,16 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     dilate(src_left, src_left, kernel_dilate);
     dilate(src_right, src_right, kernel_dilate);
     //showTwoImages("dilate", src_left, src_right);
-
-    static Mat kernel_erode2 = getStructuringElement(MORPH_RECT, Size(2, 4));
-    erode(src_left, src_left, kernel_erode2);
-    erode(src_right, src_right, kernel_erode2);
-    //showTwoImages("erode2", src_left, src_right);
-
-    static Mat kernel_dilate2 = getStructuringElement(MORPH_RECT, Size(3, 6));
-    dilate(src_left, src_left, kernel_dilate2);
-    dilate(src_right, src_right, kernel_dilate2);
-    //showTwoImages("dilate2", src_left, src_right);
+//
+//    static Mat kernel_erode2 = getStructuringElement(MORPH_RECT, Size(2, 4));
+//    erode(src_left, src_left, kernel_erode2);
+//    erode(src_right, src_right, kernel_erode2);
+//    //showTwoImages("erode2", src_left, src_right);
+//
+//    static Mat kernel_dilate2 = getStructuringElement(MORPH_RECT, Size(3, 6));
+//    dilate(src_left, src_left, kernel_dilate2);
+//    dilate(src_right, src_right, kernel_dilate2);
+//    //showTwoImages("dilate2", src_left, src_right);
 
     float alpha = 1.5;
     int beta = 0;
@@ -63,7 +62,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     src_right -= 20;
     src_left *= 5;
     src_right *= 5;
-    //showTwoImages("enlighted", src_left, src_right);
+    showTwoImages("enlighted", src_left, src_right);
 
 
 
@@ -111,6 +110,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
     state_left = matchLightBlob(light_blobs_left_, armor_box_left_);
     state_right = matchLightBlob(light_blobs_right_, armor_box_right_);
+
     //if(!(state_left && state_right)) {return false;}
     //
     //showArmorBoxVector("armor boxes", src_left, left, src_right, right);
@@ -128,6 +128,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
     /********************** convert to 3d coordinate *********************************/
     convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
+
     showArmorBox("armor box", src_left, armor_box_left_, src_right, armor_box_right_);
 
 

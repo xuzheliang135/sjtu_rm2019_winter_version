@@ -34,8 +34,6 @@ int main()
 
     while (true) {
 
-        //from_camera = waitKey(1000);
-
         WrapperHead *video;
 
         if(from_camera)
@@ -60,11 +58,11 @@ int main()
         armor_finder.setEnemyColor(enemy_color);
         cout<<"start working"<<endl;
 
-        for(int i = 0; i < 10; i++) video->read(src_left, src_right);
+        for(int i = 0; i < 10; i++)
+            video->read(src_left, src_right); // to eliminate the initial noise images
 
         while (video->read(src_left, src_right))
         {
-
             armor_finder.run(src_left, src_right);
 
 

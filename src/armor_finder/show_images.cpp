@@ -58,10 +58,11 @@ void ArmorFinder::showArmorBox(std::string windows_name,
     if(src_left.type() == CV_8UC1) // 黑白图像
     {
         cvtColor(src_left, image2show_left, COLOR_GRAY2RGB);
-        cvtColor(src_right, image2show_right, COLOR_GRAY2BGR);
+        cvtColor(src_right, image2show_right, COLOR_GRAY2RGB);
     }
     else if(src_left.type() == CV_8UC3) //RGB 彩色
     {
+        std::cout<<" is 8uc3"<<std::endl;
         image2show_left = src_left.clone();
         image2show_right = src_right.clone();
     }
@@ -72,24 +73,22 @@ void ArmorFinder::showArmorBox(std::string windows_name,
     image2show_right.colRange(0, image2show_right.cols).copyTo(combined_image.colRange(image2show_left.cols, combined_image.cols));
     imshow(windows_name, combined_image);
 
-    Rect box_on_raw_left = Rect2d(armor_box_left.x*2, armor_box_left.y*2, armor_box_left.width*2, armor_box_right.height*2);
-    Rect box_on_raw_right = Rect2d(armor_box_right.x*2, armor_box_right.y*2, armor_box_right.width*2, armor_box_right.height*2);
-
-    image2show_left = src_raw_left_.clone();
-    image2show_right = src_raw_right_.clone();
-    cvtColor(image2show_left, image2show_left, COLOR_GRAY2RGB);
-    cvtColor(image2show_right, image2show_right, COLOR_GRAY2BGR);
-
-    Mat combined_image2(image2show_left.rows, image2show_left.cols+image2show_right.cols, image2show_right.type());
-
-    rectangle(image2show_left, box_on_raw_left, Scalar(0, 255, 0), 1);
-    rectangle(image2show_right, box_on_raw_right, Scalar(0, 255, 0), 1);
-    image2show_left.colRange(0, image2show_left.cols).copyTo(combined_image2.colRange(0, image2show_left.cols));
-    image2show_right.colRange(0, image2show_right.cols).copyTo(combined_image2.colRange(image2show_left.cols, combined_image2.cols));
-
-    frame_to_display = combined_image2.clone();
-    putText(frame_to_display, std::to_string(armor_space_position_.z), Point(300, 100),cv::FONT_HERSHEY_TRIPLEX, 0.8, cv::Scalar(255, 200, 200), 1);
-    imshow("display ", frame_to_display);
+//    Rect box_on_raw_left = Rect2d(armor_box_left.x*2, armor_box_left.y*2, armor_box_left.width*2, armor_box_right.height*2);
+//    Rect box_on_raw_right = Rect2d(armor_box_right.x*2, armor_box_right.y*2, armor_box_right.width*2, armor_box_right.height*2);
+//
+//    cvtColor(src_left_, image2show_left, COLOR_GRAY2RGB);
+//    cvtColor(src_right_, image2show_right, COLOR_GRAY2RGB);
+//
+//    Mat combined_image2(image2show_left.rows, image2show_left.cols+image2show_right.cols, image2show_right.type());
+//
+//    rectangle(image2show_left, box_on_raw_left, Scalar(0, 255, 0), 1);
+//    rectangle(image2show_right, box_on_raw_right, Scalar(0, 255, 0), 1);
+//    image2show_left.colRange(0, image2show_left.cols).copyTo(combined_image2.colRange(0, image2show_left.cols));
+//    image2show_right.colRange(0, image2show_right.cols).copyTo(combined_image2.colRange(image2show_left.cols, combined_image2.cols));
+//
+//    frame_to_display = combined_image2.clone();
+//    putText(frame_to_display, std::to_string(armor_space_position_.z), Point(300, 100),cv::FONT_HERSHEY_TRIPLEX, 0.8, cv::Scalar(255, 200, 200), 1);
+//    imshow("display ", frame_to_display);
 }
 
 void ArmorFinder::showContours(std::string windows_name,
