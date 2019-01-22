@@ -38,9 +38,10 @@ public:
      * @return : bool value: whether it success.
      */
     int run(cv::Mat &src_left, cv::Mat &src_right);
-    cv::Mat frame_to_display;
-    cv::Mat src_left_, src_right_;
 
+    cv::Mat src_left_, src_right_;
+public:
+    cv::Mat frame_to_display;
 private:
     LightBlobParam light_blob_param_;
     LightCoupleParam light_couple_param_;
@@ -66,7 +67,7 @@ private:
     KCFTracker kcf_tracker_left_, kcf_tracker_right_;
 
     cv::Mat src_blue0, src_red0, src_blue1, src_red1;
-    cv::Mat src_left_, src_right_;
+
     cv::Mat src_raw_left_, src_raw_right_;
     cv::Mat src_bin_left_, src_bin_right_;
 
@@ -78,12 +79,12 @@ private:
 
 public:
     void setEnemyColor(int color);
-
+    void calibrate(cv::Mat &src_left, cv::Mat &src_right);
 private:
 
     void initCalibrateParam();
 
-    void calibrate(cv::Mat &src_left, cv::Mat &src_right);
+
 
     void initLightParam();
 

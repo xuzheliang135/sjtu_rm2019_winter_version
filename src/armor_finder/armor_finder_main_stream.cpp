@@ -9,10 +9,10 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
     src_raw_left_ = src_left.clone();
     src_raw_right_ = src_right.clone();
 
-    showTwoImages("before split",src_raw_left_, src_raw_right_);
+    //showTwoImages("before split",src_raw_left_, src_raw_right_);
     imagePreprocess(src_left, src_right);   // to split blue and red
 
-    showTwoImages("after split ", src_left_, src_right_);
+    //showTwoImages("after split ", src_left_, src_right_);
 
     if(cur_state_ == STAND_BY)
     {
@@ -23,7 +23,7 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
     {
         if(stateSearchingTarget(src_left_, src_right_))
         {
-            target_found_frame_cnt++;
+            //target_found_frame_cnt++;
         } else{
             target_found_frame_cnt = 0;
         }

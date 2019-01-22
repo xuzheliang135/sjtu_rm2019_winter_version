@@ -113,7 +113,7 @@ bool tmpCoupleJudge(const LightBlob &light_blob_i, const LightBlob &light_blob_j
     else
         rect = Point2f(static_cast<float>(10 * cos((light_blob_i.rect.angle + 90) * 3.1415926 / 180)),
                        static_cast<float>(10 * sin((light_blob_i.rect.angle + 90) * 3.1415926 / 180)));
-    cout << abs(side.dot(rect) * side.dot(rect) / (side.dot(side) * rect.dot(rect))) << endl;
+    //cout << abs(side.dot(rect) * side.dot(rect) / (side.dot(side) * rect.dot(rect))) << endl;
     return abs(side.dot(rect) * side.dot(rect) / (side.dot(side) * rect.dot(rect))) < 0.02;
 }
 bool ArmorFinder::isCoupleLight(const LightBlob &light_blob_i, const LightBlob &light_blob_j) {

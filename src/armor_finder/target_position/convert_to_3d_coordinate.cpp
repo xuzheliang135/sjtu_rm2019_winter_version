@@ -7,10 +7,10 @@ using std::cout;
 using std::endl;
 
 void ArmorFinder::initCameraParam() {
-    stereo_camera_param_.CAMERA_DISTANCE = 21.2;  // cm
-    stereo_camera_param_.FOCUS = 0.4 ;          // 4mm = 0.4cm
+    stereo_camera_param_.CAMERA_DISTANCE = 15;  // cm
+    stereo_camera_param_.FOCUS = 0.36 ;         //cm
     //stereo_camera_param_.FOCUS = 666.7 ;          //
-    stereo_camera_param_.LENGTH_PER_PIXAL = 0.247/640;  //0.3mm/640
+    stereo_camera_param_.LENGTH_PER_PIXAL =  0.0015;
     //stereo_camera_param_.LENGTH_PER_PIXAL = 1;
 
     stereo_camera_param_.HEIGHT_DIFF = -23;
