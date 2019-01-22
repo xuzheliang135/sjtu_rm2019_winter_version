@@ -49,7 +49,7 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
 //                trackInit(kcf_tracker_right_, src_raw_right_, armor_box_on_raw_right_);
 //                transferState(TRACKING_TARGET);
 //                std::cout<<"dive into tracking"<<std::endl;
-//todo:fix bug: Assertion `0' failed.Aborted (core dumped)
+//
             }
             break;
 

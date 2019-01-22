@@ -58,14 +58,10 @@ private:
     std::vector<LightBlob> light_blobs_left_real, light_blobs_right_real;
     cv::Rect2d armor_box_left_, armor_box_right_;
 
-    cv::Point3d armor_space_position_;
+
     TrackingParam track_param_;
 
     std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
-    cv::Point3d armor_space_last_position_;
-    std::vector<cv::Point3d> armor_history_positions_;
-    cv::Point3d armor_predicted_position_;
-
 
     int target_found_frame_cnt, target_unfound_frame_cnt;
     StateMachine cur_state_;
@@ -98,17 +94,12 @@ private:
 public:
     void setEnemyColor(int color);
     void calibrate(cv::Mat &src_left, cv::Mat &src_right);
-    float TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
-
 
 private:
 
     void initCalibrateParam();
 
-
-
     void initLightParam();
-
 
     void initLightCoupleParam();
 

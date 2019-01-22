@@ -102,7 +102,8 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
     preprocess(src_left_light, 150, 3.5);
     preprocess(src_right_light, 150, 3.5);
     preprocessColor(src_left_, src_right_);//腐蚀，膨胀
-    showTwoImages("color_after_erode", src_left_, src_right_);
+
+    //showTwoImages("color_after_erode", src_left_, src_right_);
 
     resize(src_left_, src_left_, Size(640, 480));
     resize(src_right_, src_right_, Size(640, 480));
@@ -117,56 +118,56 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
 
     judge_light_color(light_blobs_left_light, light_blobs_left_color, light_blobs_left_real);
     judge_light_color(light_blobs_right_light, light_blobs_right_color, light_blobs_right_real);
-
-    {
-        showTwoImages("color", src_left_, src_right_);
-        showTwoImages("light", src_left_light, src_right_light);
-
-        threshold(src_left_, src_bin_left_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-        threshold(src_right_, src_bin_right_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-        cvtColor(src_bin_left_, src_bin_left_, COLOR_GRAY2RGB);
-        cvtColor(src_bin_right_, src_bin_right_, COLOR_GRAY2RGB);
-        for (auto &a:light_blobs_left_color)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 0, 255));
-        for (auto &a:light_blobs_right_color)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 0, 255));
-        for (auto &a:light_blobs_left_light)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 255, 0));
-        for (auto &a:light_blobs_right_light)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 255, 0));
-        showTwoImages("color_bin", src_bin_left_, src_bin_right_);
-
-        threshold(src_left_light, src_bin_left_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-        threshold(src_right_light, src_bin_right_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-        cvtColor(src_bin_left_, src_bin_left_, COLOR_GRAY2RGB);
-        cvtColor(src_bin_right_, src_bin_right_, COLOR_GRAY2RGB);
-        for (auto &a:light_blobs_left_light)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 0, 255));
-        for (auto &a:light_blobs_right_light)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 0, 255));
-        showTwoImages("light_bin", src_bin_left_, src_bin_right_);
-    }//debug show
+//
+//    {
+//        showTwoImages("color", src_left_, src_right_);
+//        showTwoImages("light", src_left_light, src_right_light);
+//
+//        threshold(src_left_, src_bin_left_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+//        threshold(src_right_, src_bin_right_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+//        cvtColor(src_bin_left_, src_bin_left_, COLOR_GRAY2RGB);
+//        cvtColor(src_bin_right_, src_bin_right_, COLOR_GRAY2RGB);
+//        for (auto &a:light_blobs_left_color)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 0, 255));
+//        for (auto &a:light_blobs_right_color)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 0, 255));
+//        for (auto &a:light_blobs_left_light)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 255, 0));
+//        for (auto &a:light_blobs_right_light)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 255, 0));
+//        showTwoImages("color_bin", src_bin_left_, src_bin_right_);
+//
+//        threshold(src_left_light, src_bin_left_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+//        threshold(src_right_light, src_bin_right_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+//        cvtColor(src_bin_left_, src_bin_left_, COLOR_GRAY2RGB);
+//        cvtColor(src_bin_right_, src_bin_right_, COLOR_GRAY2RGB);
+//        for (auto &a:light_blobs_left_light)drawRotatedRectangle(src_bin_left_, a.rect, Scalar(0, 0, 255));
+//        for (auto &a:light_blobs_right_light)drawRotatedRectangle(src_bin_right_, a.rect, Scalar(0, 0, 255));
+//        showTwoImages("light_bin", src_bin_left_, src_bin_right_);
+//    }//debug show
 
 //    showContours("light contours", src_left_, light_blobs_left_color, src_right_, light_blobs_right_color);
 
     /*************************** match light blobs***********************************/
-    {
-        Mat left_show(480, 640, CV_8UC3), right_show(480, 640, CV_8UC3);
-        left_show = Scalar(0, 0, 0);//src_raw_left_.clone();
-        right_show = Scalar(0, 0, 0);//src_raw_right_.clone();
-//        cvtColor(left_show, left_show, COLOR_GRAY2RGB);
-//        cvtColor(right_show, right_show, COLOR_GRAY2RGB);
-//        for (auto &a:light_blobs_left_light)drawRotatedRectangle(left_show, a.rect, Scalar(255, 0, 0));
-//        for (auto &a:light_blobs_right_light)drawRotatedRectangle(right_show, a.rect, Scalar(255, 0, 0));
-//        for (auto &a:light_blobs_left_color)drawRotatedRectangle(left_show, a.rect, Scalar(0, 255, 0));
-//        for (auto &a:light_blobs_right_color)drawRotatedRectangle(right_show, a.rect, Scalar(0, 255, 0));
-        for (auto &a:light_blobs_left_real)drawRotatedRectangle(left_show, a.rect, Scalar(0, 0, 255));
-        for (auto &a:light_blobs_right_real)drawRotatedRectangle(right_show, a.rect, Scalar(0, 0, 255));
-//        for (auto &a:light_blobs_left_real)drawLine(left_show, a, Scalar(0, 0, 255));
-//        for (auto &a:light_blobs_right_real)drawLine(right_show, a, Scalar(0, 0, 255));
-        showTwoImages("show_rotated_Rect", left_show, right_show);
-    }//debug show
+//    {
+//        Mat left_show(480, 640, CV_8UC3), right_show(480, 640, CV_8UC3);
+//        left_show = Scalar(0, 0, 0);//src_raw_left_.clone();
+//        right_show = Scalar(0, 0, 0);//src_raw_right_.clone();
+////        cvtColor(left_show, left_show, COLOR_GRAY2RGB);
+////        cvtColor(right_show, right_show, COLOR_GRAY2RGB);
+////        for (auto &a:light_blobs_left_light)drawRotatedRectangle(left_show, a.rect, Scalar(255, 0, 0));
+////        for (auto &a:light_blobs_right_light)drawRotatedRectangle(right_show, a.rect, Scalar(255, 0, 0));
+////        for (auto &a:light_blobs_left_color)drawRotatedRectangle(left_show, a.rect, Scalar(0, 255, 0));
+////        for (auto &a:light_blobs_right_color)drawRotatedRectangle(right_show, a.rect, Scalar(0, 255, 0));
+//        for (auto &a:light_blobs_left_real)drawRotatedRectangle(left_show, a.rect, Scalar(0, 0, 255));
+//        for (auto &a:light_blobs_right_real)drawRotatedRectangle(right_show, a.rect, Scalar(0, 0, 255));
+////        for (auto &a:light_blobs_left_real)drawLine(left_show, a, Scalar(0, 0, 255));
+////        for (auto &a:light_blobs_right_real)drawLine(right_show, a, Scalar(0, 0, 255));
+//        showTwoImages("show_rotated_Rect", left_show, right_show);
+//    }//debug show
 
     vector<cv::Rect2d> left, right;
     matchLightBlobVector(light_blobs_left_real, left);
     matchLightBlobVector(light_blobs_right_real, right);
     showArmorBoxVector("armor boxes", src_left_light, left, src_right_light, right);
 
-
+    return false;
     /********************** convert to 3d coordinate *********************************/
     convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
 
