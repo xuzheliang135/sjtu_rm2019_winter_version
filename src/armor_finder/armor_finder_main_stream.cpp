@@ -8,6 +8,11 @@ using std::endl;
 int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
     src_raw_left_ = src_left.clone();
     src_raw_right_ = src_right.clone();
+    if(src_raw_left_.type() == CV_8UC3)
+    {
+        cvtColor(src_raw_left_, src_raw_left_, CV_RGB2GRAY);
+        cvtColor(src_raw_right_, src_raw_right_, CV_RGB2GRAY);
+    }
 
     showTwoImages("before split",src_raw_left_, src_raw_right_);
     imagePreprocess(src_left, src_right);   // to split blue and red
@@ -44,6 +49,7 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
                 std::cout<<"dive into tracking"<<std::endl;
             }
             break;
+
         case TRACKING_TARGET:
             if(!stateTrackingTarget(src_raw_left_, src_raw_right_))
             {
@@ -52,6 +58,7 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
             }
             break;
         case STAND_BY:
+
             stateStandBy();
             transferState(SEARCHING_TARGET);
             break;
