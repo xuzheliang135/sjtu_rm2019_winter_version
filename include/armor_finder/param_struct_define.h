@@ -11,8 +11,12 @@
 
 struct LightBlob {
     cv::RotatedRect rect;
-    explicit LightBlob(std::vector<cv::Point> &c) {
+    std::vector<cv::Point> contours;
+    double length;
+
+    explicit LightBlob(std::vector<cv::Point> &c) : contours(c) {
         rect = minAreaRect(c);
+        length = std::max(rect.size.height, rect.size.width);
     };
     bool operator<(LightBlob &l2) { return this->rect.center.x < l2.rect.center.x; }
     bool operator<=(LightBlob &l2) { return this->rect.center.x <= l2.rect.center.x; }
