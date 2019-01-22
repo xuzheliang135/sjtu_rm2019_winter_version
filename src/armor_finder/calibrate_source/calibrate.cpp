@@ -28,6 +28,7 @@ void ArmorFinder::initCalibrateParam() {
 
     initUndistortRectifyMap(M1, D1, R1, P1, image_size, CV_16SC2, calibrate_param_.map11, calibrate_param_.map12);
     initUndistortRectifyMap(M2, D2, R2, P2, image_size, CV_16SC2, calibrate_param_.map21, calibrate_param_.map22);
+    calibrate_param_.isAvailable = true;
 
 }
 

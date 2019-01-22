@@ -28,6 +28,7 @@ struct LightBlobParam {
     float CONTOUR_HW_RATIO_MAX;
     float CONTOUR_HW_RATIO_MIN;
     float CONTOUR_ANGLE_MAX;
+    float Y_POSITION_MIN;
 };
 
 struct LightCoupleParam{
@@ -36,8 +37,8 @@ struct LightCoupleParam{
     float TWIN_DISTANCE_N_MIN;
     float TWIN_DISTANCE_N_MAX;
     float TWIN_DISTANCE_T_MAX;
-    float TWIN_AREA_MAX;
-    float TWIN_CENTER_POSITION_DIFF_RATIO;
+    float TWIN_AREA_RATIO_MAX;
+    float TWIN_CENTER_POSITION_DIFF;
 };
 
 struct StereoCameraPara {
@@ -45,7 +46,7 @@ struct StereoCameraPara {
     double FOCUS;
     double LENGTH_PER_PIXAL;
     int WIDTH, HEIGHT;
-    int HEIGHT_DIFF;
+    double POSITION_INRTIA_RATIO;
 };
 
 struct ArmorSeekingParam{
@@ -56,6 +57,7 @@ struct ArmorSeekingParam{
 
 struct ArmorPridictParam{
     int ARMOR_POSITION_HISTORY_MAX_LENGTH;
+
 };
 
 enum ArmorType {

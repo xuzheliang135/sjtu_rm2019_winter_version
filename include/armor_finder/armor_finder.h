@@ -54,6 +54,7 @@ private:
     std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
     cv::Rect2d armor_box_left_, armor_box_right_;
     cv::Point3d armor_space_position_;
+    cv::Point3d armor_space_last_position_;
     std::vector<cv::Point3d> armor_history_positions_;
     cv::Point3d armor_predicted_position_;
 
@@ -69,6 +70,7 @@ private:
     cv::Mat src_blue0, src_red0, src_blue1, src_red1;
 
     cv::Mat src_raw_left_, src_raw_right_;
+    cv::Rect2d armor_box_on_raw_left_, armor_box_on_raw_right_;
     cv::Mat src_bin_left_, src_bin_right_;
 
     int enemy_color_;

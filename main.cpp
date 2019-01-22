@@ -27,7 +27,7 @@ using std::string;
 
 int main()
 {
-    int enemy_color = ENEMY_RED;
+    int enemy_color = ENEMY_BLUE;
     int from_camera = 1;
     cout << "Input 1 for camera, 0 for video files" << endl;
     cin >> from_camera;
@@ -64,7 +64,7 @@ int main()
         while (video->read(src_left, src_right))
         {
             armor_finder.run(src_left, src_right);
-
+            waitKey(1);
 
         }
         delete video;

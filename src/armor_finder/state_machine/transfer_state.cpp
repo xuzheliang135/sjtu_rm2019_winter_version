@@ -4,7 +4,7 @@ using namespace cv;
 
 
 void ArmorFinder::initStateMachineParam() {
-    state_machine_param_.THRESHOLD_FOUND_SEARCHING_TO_TRACKING = 5;
+    state_machine_param_.THRESHOLD_FOUND_SEARCHING_TO_TRACKING = 1;
     state_machine_param_.THRESHOLD_UNFOUND_TRACKING_TO_SEARCHING = 10;
     TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO = 0.8;
 }
