@@ -8,18 +8,18 @@ using namespace std;
 
 
 void ArmorFinder::initLightCoupleParam() {
-    light_couple_param_.TWIN_ANGEL_MAX = 5.000;
-    light_couple_param_.TWIN_LENGTH_RATIO_MAX = 2.0;
+    light_couple_param_.TWIN_ANGEL_MAX = 10;
+    light_couple_param_.TWIN_LENGTH_RATIO_MAX = 4.0;
     light_couple_param_.TWIN_DISTANCE_N_MIN = 1.3;       // 1.7
     light_couple_param_.TWIN_DISTANCE_N_MAX = 3.8;       // 3.8
     light_couple_param_.TWIN_DISTANCE_T_MAX = 1.4;
-    light_couple_param_.TWIN_AREA_MAX = 1.2;
-    light_couple_param_.TWIN_CENTER_POSITION_DIFF_RATIO = 0.5;
+    light_couple_param_.TWIN_AREA_RATIO_MAX = 3;
+    light_couple_param_.TWIN_CENTER_POSITION_DIFF = 100;
 }
 
 void ArmorFinder::initArmorSeekingParam() {
     armor_seeking_param_.BORDER_IGNORE = 10;
-    armor_seeking_param_.BOX_EXTRA = 10;
+    armor_seeking_param_.BOX_EXTRA = 5;
 }
 
 bool ArmorFinder::matchLightBlobVector(std::vector<LightBlob> &light_blobs, vector<cv::Rect2d> &armor_box) {

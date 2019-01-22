@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(new)
+project(sjtu_rm2019_winter_version)
 set(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_BUILD_TYPE DEBUG)
 

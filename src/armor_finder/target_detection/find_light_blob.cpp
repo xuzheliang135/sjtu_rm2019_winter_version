@@ -13,6 +13,7 @@ void ArmorFinder::initLightParam() {
     light_blob_param_.CONTOUR_HW_RATIO_MIN = 2.5;       // 2.5
     light_blob_param_.CONTOUR_HW_RATIO_MAX = 15;
     light_blob_param_.CONTOUR_ANGLE_MAX = 20.0;
+    light_blob_param_.Y_POSITION_MIN = 50;
 }
 
 

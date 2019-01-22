@@ -11,20 +11,12 @@
 
 struct LightBlob {
     cv::RotatedRect rect;
-    std::vector<cv::Point> contours;
-    double length;
-
-    explicit LightBlob(std::vector<cv::Point> &c) : contours(c) {
+    explicit LightBlob(std::vector<cv::Point> &c) {
         rect = minAreaRect(c);
-        length = std::max(rect.size.height,rect.size.width);
     };
-
     bool operator<(LightBlob &l2) { return this->rect.center.x < l2.rect.center.x; }
-
     bool operator<=(LightBlob &l2) { return this->rect.center.x <= l2.rect.center.x; }
-
     bool operator>(LightBlob &l2) { return this->rect.center.x > l2.rect.center.x; }
-
     bool operator>=(LightBlob &l2) { return this->rect.center.x >= l2.rect.center.x; }
 };
 
@@ -36,16 +28,17 @@ struct LightBlobParam {
     float CONTOUR_HW_RATIO_MAX;
     float CONTOUR_HW_RATIO_MIN;
     float CONTOUR_ANGLE_MAX;
+    float Y_POSITION_MIN;
 };
 
-struct LightCoupleParam {
+struct LightCoupleParam{
     float TWIN_ANGEL_MAX;
     float TWIN_LENGTH_RATIO_MAX;
     float TWIN_DISTANCE_N_MIN;
     float TWIN_DISTANCE_N_MAX;
     float TWIN_DISTANCE_T_MAX;
-    float TWIN_AREA_MAX;
-    float TWIN_CENTER_POSITION_DIFF_RATIO;
+    float TWIN_AREA_RATIO_MAX;
+    float TWIN_CENTER_POSITION_DIFF;
 };
 
 struct StereoCameraPara {
@@ -53,17 +46,18 @@ struct StereoCameraPara {
     double FOCUS;
     double LENGTH_PER_PIXAL;
     int WIDTH, HEIGHT;
-    int HEIGHT_DIFF;
+    double POSITION_INRTIA_RATIO;
 };
 
-struct ArmorSeekingParam {
+struct ArmorSeekingParam{
     int BORDER_IGNORE;
     int BOX_EXTRA;
 
 };
 
-struct ArmorPridictParam {
+struct ArmorPridictParam{
     int ARMOR_POSITION_HISTORY_MAX_LENGTH;
+
 };
 
 enum ArmorType {
@@ -73,20 +67,25 @@ enum ArmorType {
     ARMOR_TYPE_SIZE
 };
 
-enum StateMachine {
+enum StateMachine{
     STAND_BY,
     SEARCHING_TARGET,
     TRACKING_TARGET
 };
 
-struct StateMachineParam {
+struct StateMachineParam{
     int THRESHOLD_FOUND_SEARCHING_TO_TRACKING;
     int THRESHOLD_UNFOUND_TRACKING_TO_SEARCHING;
 };
 
-struct CalibrateParam {
+struct CalibrateParam{
     bool isAvailable;
     cv::Mat map11, map12, map21, map22;
+};
+
+struct TrackingParam{
+    int THRESHOLD_FOR_COUNT_NON_ZERO;
+    double TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
 };
 
 

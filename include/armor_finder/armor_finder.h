@@ -16,6 +16,9 @@
 
 #include <armor_finder/param_struct_define.h>
 #include "armor_finder/constant.h"
+#include <uart/uart.h>
+#include <tracker/kcftracker.hpp>
+#include "tracker/tracker.h"
 
 using std::vector;
 
@@ -37,6 +40,11 @@ public:
     cv::Mat frame_to_display;
     cv::Mat src_left_, src_right_;
 
+    int run(cv::Mat &src_left, cv::Mat &src_right);
+
+    cv::Mat src_left_, src_right_;
+public:
+    cv::Mat frame_to_display;
 private:
     LightBlobParam light_blob_param_;
     LightCoupleParam light_couple_param_;
@@ -51,6 +59,12 @@ private:
     std::vector<LightBlob> light_blobs_left_real, light_blobs_right_real;
     cv::Rect2d armor_box_left_, armor_box_right_;
     cv::Point3d armor_space_position_;
+    TrackingParam track_param_;
+
+    std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
+    cv::Rect2d armor_box_left_, armor_box_right_;
+    cv::Point3d armor_space_position_;
+    cv::Point3d armor_space_last_position_;
     std::vector<cv::Point3d> armor_history_positions_;
     cv::Point3d armor_predicted_position_;
 
@@ -59,14 +73,23 @@ private:
 
     ArmorType armor_type_;
 
+    Uart uart_;
+
+    KCFTracker kcf_tracker_left_, kcf_tracker_right_;
+
     cv::Mat src_blue0, src_red0, src_blue1, src_red1;
     cv::Mat src_raw_left_, src_raw_right_;
+    cv::Rect2d armor_box_on_raw_left_, armor_box_on_raw_right_;
     cv::Mat src_bin_left_, src_bin_right_;
 
     int enemy_color_;
 
     double total_contour_area_right_;
     double total_contour_area_left_;
+
+public:
+    void setEnemyColor(int color);
+    void calibrate(cv::Mat &src_left, cv::Mat &src_right);
     float TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
 
 public:
@@ -76,7 +99,7 @@ private:
 
     void initCalibrateParam();
 
-    void calibrate(cv::Mat &src_left, cv::Mat &src_right);
+
 
     void initLightParam();
 
@@ -94,10 +117,13 @@ private:
 
     void initStateMachineParam();
 
+    void initTrackingParam();
+
     void transferState(StateMachine state);
 
     bool stateStandBy();
 
+    bool stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right);
 
     bool stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right);
 
@@ -195,7 +221,12 @@ public:
     void showArmorBoxVector(std::string windows_name, const cv::Mat &src_left, const vector<cv::Rect2d> &armor_box_left,
                             const cv::Mat &src_right, const vector<cv::Rect2d> &armor_box_right);
 
+    void showSpacePositionBackToStereoVision(
+            const cv::Mat &src_left, const cv::Mat &src_right, const cv::Point3d &space_position);
 
+    void trackInit(KCFTracker &kcf_tracker, cv::Mat &src, cv::Rect2d &armor_box);
+
+    bool track(KCFTracker &kcf_tracker, cv::Mat &src, cv::Rect2d &armor_box);
 
 };
 

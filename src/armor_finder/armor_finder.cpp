@@ -8,6 +8,8 @@ using std::vector;
 
 
 ArmorFinder::ArmorFinder():
+                kcf_tracker_left_(false, true, false, false),
+                kcf_tracker_right_(false, true, false, false),
                 src_blue0(SRC_HEIGHT, SRC_WIDTH, CV_8UC1),
                 src_blue1(SRC_HEIGHT, SRC_WIDTH, CV_8UC1),
                 src_red0(SRC_HEIGHT, SRC_WIDTH, CV_8UC1),
@@ -15,6 +17,13 @@ ArmorFinder::ArmorFinder():
                 {
     initLightParam();
     initLightCoupleParam();
+    initCameraParam();
+    initArmorSeekingParam();
+    initArmorPredictParam();
+    initUartParam();
+    initStateMachineParam();
+    initCalibrateParam();
+    initTrackingParam();
 
     cur_state_ = SEARCHING_TARGET;
     target_found_frame_cnt = 0;

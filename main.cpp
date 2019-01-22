@@ -34,16 +34,14 @@ int main()
 
     while (true) {
 
-        //from_camera = waitKey(1000);
-
         WrapperHead *video;
 
         if(from_camera)
             video = new CameraWrapper;
         else
             video = new VideoWrapper(
-                    "/home/xuzheliang135/Downloads/video/video_color_0.avi",
-                    "/home/xuzheliang135/Downloads/video/video_color_1.avi"
+                    "/home/zhikun/Videos/video_color_0.avi",
+                    "/home/zhikun/Videos/video_color_1.avi"
                     );
 
         if(video->init())
@@ -52,24 +50,22 @@ int main()
         } else{
             continue;
         }
-      
+
+
         Mat src_left, src_right;
 
         ArmorFinder armor_finder;
         armor_finder.setEnemyColor(enemy_color);
         cout<<"start working"<<endl;
 
-        for(int i = 0; i < 10; i++) video->read(src_left, src_right);
+        for(int i = 0; i < 10; i++)
+            video->read(src_left, src_right); // to eliminate the initial noise images
 
         while (video->read(src_left, src_right))
         {
-            if (!from_camera) {
-                cvtColor(src_left, src_left, COLOR_BGR2GRAY);
-                cvtColor(src_right, src_right, COLOR_BGR2GRAY);
-            }
-
-            armor_finder.stateSearchingTarget(src_left, src_right);
-            waitKey(100);
+            //armor_finder.showTwoImages("raw", src_left, src_right);
+            armor_finder.run(src_left, src_right);
+            waitKey(1);
 
         }
         delete video;
