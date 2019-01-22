@@ -23,6 +23,7 @@ ArmorFinder::ArmorFinder():
     initUartParam();
     initStateMachineParam();
     initCalibrateParam();
+    initTrackingParam();
 
     cur_state_ = SEARCHING_TARGET;
     target_found_frame_cnt = 0;
