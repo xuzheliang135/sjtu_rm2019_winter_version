@@ -85,6 +85,7 @@ struct CalibrateParam{
 
 struct TrackingParam{
     int THRESHOLD_FOR_COUNT_NON_ZERO;
+    double TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
 };
 
 

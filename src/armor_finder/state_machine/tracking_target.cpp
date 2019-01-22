@@ -4,6 +4,7 @@ using namespace cv;
 
 void ArmorFinder::initTrackingParam(){
     track_param_.THRESHOLD_FOR_COUNT_NON_ZERO = 200;
+    track_param_.TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO = 0.95;
 
 }
 
@@ -25,8 +26,8 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     Mat roi_right = src_right.clone()(armor_box_on_raw_right_);
     threshold(roi_left, roi_left, track_param_.THRESHOLD_FOR_COUNT_NON_ZERO, 255, THRESH_BINARY);
     threshold(roi_right, roi_right, track_param_.THRESHOLD_FOR_COUNT_NON_ZERO, 255, THRESH_BINARY);
-    if(countNonZero(roi_left) < TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_left_ ||
-        countNonZero(roi_right) < TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_right_ ){
+    if(countNonZero(roi_left) < track_param_.TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_left_ ||
+        countNonZero(roi_right) < track_param_.TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_right_ ){
         return false;
     }
 

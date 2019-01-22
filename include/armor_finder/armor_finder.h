@@ -78,7 +78,6 @@ private:
 
     double total_contour_area_right_;
     double total_contour_area_left_;
-    float TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
 
 public:
     void setEnemyColor(int color);
