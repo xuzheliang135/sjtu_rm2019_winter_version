@@ -62,14 +62,14 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     src_right -= 30;
     src_left *= 5;
     src_right *= 5;
-    showTwoImages("enlighted", src_left, src_right);
+    //showTwoImages("enlighted", src_left, src_right);
 
 
 
     /************* debug code ***************************************/
     threshold(src_left, src_bin_left_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
     threshold(src_right, src_bin_right_, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-    showTwoImages("bin", src_bin_left_, src_bin_right_);
+    //showTwoImages("bin", src_bin_left_, src_bin_right_);
     /*********************************************************/
 
     /************************** find light blobs **********************************************/
@@ -87,7 +87,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
 
     if (!(state_left && state_right)) { return false; }
-    showContours("light contours", src_left, light_blobs_left_, src_right, light_blobs_right_);
+    //showContours("light contours", src_left, light_blobs_left_, src_right, light_blobs_right_);
 
 
 
@@ -152,6 +152,6 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
             static_cast<float>(armor_space_position_.y),
             static_cast<float>(armor_space_position_.z));
 
-    return false;
+    return true;
 
 }

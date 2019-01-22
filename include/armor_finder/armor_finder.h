@@ -50,6 +50,7 @@ private:
     ArmorPridictParam armor_predict_param_;
     StateMachineParam state_machine_param_;
     CalibrateParam calibrate_param_;
+    TrackingParam track_param_;
 
     std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
     cv::Rect2d armor_box_left_, armor_box_right_;
@@ -103,6 +104,8 @@ private:
     void initUartParam();
 
     void initStateMachineParam();
+
+    void initTrackingParam();
 
     void transferState(StateMachine state);
 

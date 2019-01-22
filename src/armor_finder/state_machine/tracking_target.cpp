@@ -2,17 +2,29 @@
 
 using namespace cv;
 
+void ArmorFinder::initTrackingParam(){
+    track_param_.THRESHOLD_FOR_COUNT_NON_ZERO = 200;
+
+}
+
 
 bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
     /********************** tracking ***********************************************/
     track(kcf_tracker_left_, src_left, armor_box_on_raw_left_);
     track(kcf_tracker_right_, src_right, armor_box_on_raw_right_);
+    if( (Rect2d(0, 0, 640, 480)&armor_box_on_raw_left_).area() < armor_box_on_raw_left_.area() ||
+        (Rect2d(0, 0, 640, 480)&armor_box_on_raw_right_).area() < armor_box_on_raw_right_.area()) // avoid box touching edges
+    {
+
+        target_found_frame_cnt = 0;
+        return false;
+    }
 
     Mat roi_left = src_left.clone()(armor_box_on_raw_left_);
     Mat roi_right = src_right.clone()(armor_box_on_raw_right_);
-    threshold(roi_left, roi_left, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
-    threshold(roi_right, roi_right, light_blob_param_.GRAY_THRESH, 255, THRESH_BINARY);
+    threshold(roi_left, roi_left, track_param_.THRESHOLD_FOR_COUNT_NON_ZERO, 255, THRESH_BINARY);
+    threshold(roi_right, roi_right, track_param_.THRESHOLD_FOR_COUNT_NON_ZERO, 255, THRESH_BINARY);
     if(countNonZero(roi_left) < TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_left_ ||
         countNonZero(roi_right) < TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_right_ ){
         return false;

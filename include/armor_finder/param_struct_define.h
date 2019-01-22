@@ -83,5 +83,9 @@ struct CalibrateParam{
     cv::Mat map11, map12, map21, map22;
 };
 
+struct TrackingParam{
+    int THRESHOLD_FOR_COUNT_NON_ZERO;
+};
+
 
 #endif //STEREOVISION_PARAM_DEFINE_H
