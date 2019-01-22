@@ -121,7 +121,7 @@ bool ArmorFinder::isCoupleLight(const LightBlob &light_blob_i, const LightBlob &
     Point2f center_i = light_blob_i.rect.center;
     Point2f center_j = light_blob_j.rect.center;
     if (abs(center_i.y - center_j.y) > light_couple_param_.TWIN_CENTER_POSITION_DIFF) {
-        cout<<"position y diff too much: "<<center_i<<" "<<center_j<< endl;
+//        cout<<"position y diff too much: "<<center_i<<" "<<center_j<< endl;
         return false;
     }
 
@@ -154,7 +154,7 @@ bool ArmorFinder::isCoupleLight(const LightBlob &light_blob_i, const LightBlob &
     double area_j = light_blob_j.rect.boundingRect2f().area();
     if(area_i / area_j > light_couple_param_.TWIN_AREA_RATIO_MAX || area_j / area_i > light_couple_param_.TWIN_AREA_RATIO_MAX)
     {
-        cout<<"area similar fail "<<area_i<<" "<<area_j<<" "<<center_i<<" "<<center_j<<endl;
+        //cout<<"area similar fail "<<area_i<<" "<<area_j<<" "<<center_i<<" "<<center_j<<endl;
         return false;
     }
 
