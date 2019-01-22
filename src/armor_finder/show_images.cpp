@@ -89,6 +89,11 @@ void ArmorFinder::showArmorBox(std::string windows_name,
 //    frame_to_display = combined_image2.clone();
 //    putText(frame_to_display, std::to_string(armor_space_position_.z), Point(300, 100),cv::FONT_HERSHEY_TRIPLEX, 0.8, cv::Scalar(255, 200, 200), 1);
 //    imshow("display ", frame_to_display);
+    rectangle(image2show_left, armor_box_left, Scalar(0, 255, 0), 1);
+    rectangle(image2show_right, armor_box_right, Scalar(0, 255, 0), 1);
+    image2show_left.colRange(0, image2show_left.cols).copyTo(combined_image.colRange(0, image2show_left.cols));
+    image2show_right.colRange(0, image2show_right.cols).copyTo(combined_image.colRange(image2show_left.cols, combined_image.cols));
+    imshow(windows_name, combined_image);
 }
 
 void ArmorFinder::showContours(std::string windows_name,
