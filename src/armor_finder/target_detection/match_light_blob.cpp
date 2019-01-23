@@ -22,7 +22,8 @@ void ArmorFinder::initArmorSeekingParam() {
     armor_seeking_param_.BOX_EXTRA = 5;
 }
 
-bool ArmorFinder::matchLightBlobVector(std::vector<LightBlob> &light_blobs, vector<cv::Rect2d> &armor_box) {
+bool ArmorFinder::matchLightBlobVector(std::vector<LightBlob> &light_blobs, vector<cv::Rect2d> &armor_boxes) {
+    armor_boxes.clear();
     if (light_blobs.size() < 2)
         return false;
     long light_index_left = -1;
@@ -50,7 +51,7 @@ bool ArmorFinder::matchLightBlobVector(std::vector<LightBlob> &light_blobs, vect
             if (min_x < 0 || max_x > 640 || min_y < 0 || max_y > 480) {
                 continue;
             }
-            armor_box.emplace_back(Rect2d(min_x, min_y, max_x - min_x, max_y - min_y));
+            armor_boxes.emplace_back(Rect2d(min_x, min_y, max_x - min_x, max_y - min_y));
         }
 
     }
@@ -120,4 +121,5 @@ bool ArmorFinder::isCoupleLight(const LightBlob &light_blob_i, const LightBlob &
            oldAngelJudge(light_blob_i, light_blob_j);
 //    return oldAngelJudge(light_blob_i, light_blob_j);
 }
+
 

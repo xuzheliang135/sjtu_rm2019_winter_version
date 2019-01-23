@@ -25,6 +25,9 @@ struct LightBlob {
 };
 
 struct LightBlobParam {
+    int PREPROCESS_SUBSTRACT_FACTOR;
+    float PREPROCESS_MULTIPLY_FACTOR;
+
     int GRAY_THRESH;
     long CONTOUR_AREA_MAX;
     long CONTOUR_AREA_MIN;

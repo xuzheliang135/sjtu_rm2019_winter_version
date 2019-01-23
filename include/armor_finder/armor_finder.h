@@ -52,18 +52,18 @@ private:
     ArmorPridictParam armor_predict_param_;
     StateMachineParam state_machine_param_;
     CalibrateParam calibrate_param_;
-
-    std::vector<LightBlob> light_blobs_left_light, light_blobs_right_light;
-    std::vector<LightBlob> light_blobs_left_color, light_blobs_right_color;
-    std::vector<LightBlob> light_blobs_left_real, light_blobs_right_real;
-    cv::Rect2d armor_box_left_, armor_box_right_;
-
-
     TrackingParam track_param_;
 
-    std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
+    std::vector<LightBlob> light_blobs_left_light_, light_blobs_right_light_;
+    std::vector<LightBlob> light_blobs_left_color_, light_blobs_right_color_;
+    std::vector<LightBlob> light_blobs_left_real_, light_blobs_right_real_;
+
+    cv::Rect2d armor_box_left_, armor_box_right_;
+
+    std::vector<cv::Rect2d> armor_boxes_left_, armor_boxes_right_;
 
     int target_found_frame_cnt, target_unfound_frame_cnt;
+
     StateMachine cur_state_;
 
     ArmorType armor_type_;
@@ -88,7 +88,6 @@ private:
     std::vector<cv::Point3d> armor_history_positions_;
     cv::Point3d armor_predicted_position_;
     std::vector<clock_t> time_serial;
-    clock_t oldest_time_stamp;
 
 
 public:
@@ -126,6 +125,14 @@ private:
     void splitBayerBG(cv::Mat &src, cv::Mat &blue, cv::Mat &red);
 
     void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right);
+
+    bool piplineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right);
+
+    void piplineLightBlobPreprocess(cv::Mat &);
+
+public:
+    bool matchTwoArmorBox(vector<cv::Rect2d> &armor_box_list_left, vector<cv::Rect2d> &armor_box_list_right,
+            cv::Rect2d &armor_box_left, cv::Rect2d &armor_box_right);
 
 public:
 
