@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <thread>
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
@@ -38,7 +39,7 @@ private:
     IplImage* iplImage1;
     int channel0;
     int channel1;
-
+    bool read_state0, read_state1;
 
 
 
@@ -52,7 +53,9 @@ public:
     bool read(cv::Mat& src0, cv::Mat& src1) final;
     bool readRaw(cv::Mat& src0, cv::Mat& src1);
     bool readProcessed(cv::Mat& src0, cv::Mat& src1);
-
+    bool read_thread(cv::Mat& src0, cv::Mat& src1);
+    void read_camera_thread0(cv::Mat &src);
+    void read_camera_thread1(cv::Mat &src);
 
 };
 

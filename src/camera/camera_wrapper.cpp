@@ -62,16 +62,16 @@ bool CameraWrapper::init() {
         return false;
     }
 
-        CameraGetFriendlyName(h_camera0, camera_name0);
-        CameraGetFriendlyName(h_camera1, camera_name1);
-        cout<<"camera names: "<<camera_name0<<" "<<camera_name1<<endl;
-//        cout<<camera_name0<<endl;
-//        cout<<camera_name1<<endl;
+    CameraGetFriendlyName(h_camera0, camera_name0);
+    CameraGetFriendlyName(h_camera1, camera_name1);
     //如果读取的相机列表不是0在左，1在右，则交换相机句柄
     if(strcmp(camera_name0, "left") != 0)
     {
         swapCameraHandle();
     }
+    CameraGetFriendlyName(h_camera0, camera_name0);
+    CameraGetFriendlyName(h_camera1, camera_name1);
+    cout<<"camera names: "<<camera_name0<<" "<<camera_name1<<endl;
 
     //获得相机的特性描述结构体。该结构体中包含了相机可设置的各种参数的范围信息。决定了相关函数的参数
     CameraGetCapability(h_camera0, &tCapability0);
@@ -134,17 +134,16 @@ bool CameraWrapper::init() {
 }
 
 
+
+
 bool CameraWrapper::read(cv::Mat& src0, cv::Mat& src1) {
     return readRaw(src0, src1);             //suit for using bayer hacking in armor_finder to replace process, fast and it can filter red and blue.
     //return readProcessed(src0, src1);   // processed color image, but this runs slowly, about half fps of previous one.
-
-
+    //return read_thread(src0, src1);     // read from camera using two threads, it seems of no use
 }
 
+
 bool CameraWrapper::readRaw(cv::Mat &src0, cv::Mat &src1) {
-
-
-
     if (CameraGetImageBuffer(h_camera0, &frame_info0, &pby_buffer0, 1000) == CAMERA_STATUS_SUCCESS &&
         CameraGetImageBuffer(h_camera1, &frame_info1, &pby_buffer1, 1000) == CAMERA_STATUS_SUCCESS)
     {
@@ -222,6 +221,44 @@ void CameraWrapper::swapCameraHandle() {
     int tmp_h_camera = h_camera0;
     h_camera0 = h_camera1;
     h_camera1 = tmp_h_camera;
+}
+
+
+void CameraWrapper::read_camera_thread0(cv::Mat &src){
+    if(CameraGetImageBuffer(h_camera0, &frame_info0, &pby_buffer0, 1000) == CAMERA_STATUS_SUCCESS){
+        CameraImageProcess(h_camera0, pby_buffer0, rgb_buffer0, &frame_info0);
+        iplImage0 = cvCreateImageHeader(cvSize(frame_info0.iWidth, frame_info0.iHeight), IPL_DEPTH_8U, channel0);
+        cvSetData(iplImage0, rgb_buffer0, frame_info0.iWidth * channel0);
+        src = cv::cvarrToMat(iplImage0);
+        CameraReleaseImageBuffer(h_camera0, pby_buffer0);
+        read_state0 = true;
+    } else{
+        read_state0 = false;
+    }
+
+}
+
+void CameraWrapper::read_camera_thread1(cv::Mat &src){
+    if(CameraGetImageBuffer(h_camera1, &frame_info1, &pby_buffer1, 1000) == CAMERA_STATUS_SUCCESS){
+        CameraImageProcess(h_camera1, pby_buffer1, rgb_buffer1, &frame_info1);
+        iplImage1 = cvCreateImageHeader(cvSize(frame_info1.iWidth, frame_info1.iHeight), IPL_DEPTH_8U, channel1);
+        cvSetData(iplImage1, rgb_buffer1, frame_info1.iWidth * channel1);
+        src = cv::cvarrToMat(iplImage1);
+        CameraReleaseImageBuffer(h_camera1, pby_buffer1);
+        read_state1 = true;
+    } else
+    {
+        read_state1 = false;
+    }
+
+}
+
+bool CameraWrapper::read_thread(cv::Mat &src0, cv::Mat &src1) {
+    std::thread t1(&CameraWrapper::read_camera_thread0, this, std::ref(src0));
+    std::thread t2(&CameraWrapper::read_camera_thread1, this, std::ref(src1));
+    t1.join();
+    t2.join();
+    return read_state0 && read_state1;
 }
 
 

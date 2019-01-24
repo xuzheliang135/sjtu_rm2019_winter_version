@@ -5,6 +5,9 @@ set(CMAKE_CXX_STANDARD 11)
 SET(CMAKE_BUILD_TYPE DEBUG)
 
 
+# 允许c++11标准、O3优化、多线程。match选项可避免一些cpu上的问题
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread" )
+
 # 添加cmake模块以使用ceres库
 list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/extra_files/cmake_modules )
 
@@ -29,3 +32,4 @@ add_executable(run main.cpp ${sourcefiles})
 target_link_libraries(run g2o_core g2o_stuff)
 TARGET_LINK_LIBRARIES(run  ${OpenCV_LIBS})
 TARGET_LINK_LIBRARIES(run  /lib/libMVSDK.so)
+target_link_libraries(run ${CMAKE_THREAD_LIBS_INIT})

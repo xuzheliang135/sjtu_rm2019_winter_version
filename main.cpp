@@ -52,25 +52,29 @@ int main()
             continue;
         }
 
-
         Mat src_left, src_right;
 
         ArmorFinder armor_finder;
         armor_finder.setEnemyColor(enemy_color);
-        cout<<"start working"<<endl;
 
         for(int i = 0; i < 10; i++)
+        {
             video->read(src_left, src_right); // to eliminate the initial noise images
-
+        }
+        cout<<"start working"<<endl;
+        clock_t last_time = clock();
         while (video->read(src_left, src_right))
         {
+            cout<<(clock() - last_time) * 1000.0 / CLOCKS_PER_SEC<<endl;
+            last_time = clock();
             armor_finder.showTwoImages("raw", src_left, src_right);
-            //armor_finder.run(src_left, src_right);
-            if(tool_for_calibrate(src_left, src_right)){
-                waitKey(0);
-                return 0;
-            }
-            waitKey(500);
+//            //armor_finder.run(src_left, src_right);
+//            if(tool_for_calibrate(src_left, src_right)){
+//                waitKey(0);
+//                return 0;
+//            }
+//            waitKey(500);
+            waitKey(1);
 
         }
 
