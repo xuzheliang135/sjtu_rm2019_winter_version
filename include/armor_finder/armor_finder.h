@@ -57,6 +57,7 @@ private:
     std::vector<LightBlob> light_blobs_left_light_, light_blobs_right_light_;
     std::vector<LightBlob> light_blobs_left_color_, light_blobs_right_color_;
     std::vector<LightBlob> light_blobs_left_real_, light_blobs_right_real_;
+    std::vector<int> armor_num_left, armor_num_right;
 
     cv::Rect2d armor_box_left_, armor_box_right_;
 
@@ -73,7 +74,8 @@ private:
     KCFTracker kcf_tracker_left_, kcf_tracker_right_;
 
     cv::Mat src_blue0, src_red0, src_blue1, src_red1;
-    cv::Mat src_raw_left_, src_raw_right_;
+    cv::Mat src_raw_right_;
+    cv::Mat &src_raw_left_;
     cv::Rect2d armor_box_on_raw_left_, armor_box_on_raw_right_;
     cv::Mat src_bin_left_, src_bin_right_;
 
@@ -130,6 +132,8 @@ private:
 
     void piplineLightBlobPreprocess(cv::Mat &InOutput);
 
+    int recognize_digits(cv::Mat image);
+
 public:
     bool matchTwoArmorBox(vector<cv::Rect2d> &armor_box_list_left, vector<cv::Rect2d> &armor_box_list_right,
             cv::Rect2d &armor_box_left, cv::Rect2d &armor_box_right);
@@ -137,7 +141,6 @@ public:
 public:
 
     void clear_light_blobs_vector();
-    cv::Mat getNumberPic(cv::Mat &src, const cv::Rect &rect);
 
     void ispPipline(cv::Mat &src);
 
