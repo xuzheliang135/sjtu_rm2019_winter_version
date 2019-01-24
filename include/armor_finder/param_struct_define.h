@@ -25,6 +25,9 @@ struct LightBlob {
 };
 
 struct LightBlobParam {
+    int PREPROCESS_SUBSTRACT_FACTOR;
+    float PREPROCESS_MULTIPLY_FACTOR;
+
     int GRAY_THRESH;
     long CONTOUR_AREA_MAX;
     long CONTOUR_AREA_MIN;
@@ -61,7 +64,7 @@ struct ArmorSeekingParam{
 
 struct ArmorPridictParam{
     int ARMOR_POSITION_HISTORY_MAX_LENGTH;
-
+    clock_t time_predict;
 };
 
 enum ArmorType {

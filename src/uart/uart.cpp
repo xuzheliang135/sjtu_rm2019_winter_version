@@ -121,15 +121,6 @@ int Uart::set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop) {
 void Uart::sendTarget(float x, float y, float z) {
     static short x_tmp, y_tmp, z_tmp;
 
-    time_t t = time(nullptr);
-    if(cur_time != t)
-    {
-        cur_time = t;
-        cout<<"fps:"<<fps<<", ("<<x<<","<<y<<","<<z<<")"<<endl;
-        fps = 0;
-    }
-    fps += 1;
-
     x_tmp= static_cast<short>(x * (32768 - 1) / 100);
     y_tmp= static_cast<short>(y * (32768 - 1) / 100);
     z_tmp= static_cast<short>(z * (32768 - 1) / 1000);
@@ -145,6 +136,16 @@ void Uart::sendTarget(float x, float y, float z) {
 
     write(fd, buff, 8);
 
+}
+
+void Uart::countFPS() {
+    time_t t = time(nullptr);
+    if(cur_time != t)
+    {
+        cur_time = t;
+        fps = 0;
+    }
+    fps += 1;
 }
 
 // 's' + (x) ( 8bit + 8bit ) + (y) ( 8bit + 8bit ) + (z) ( 8bit + 8bit ) + 'e'

@@ -2,3 +2,7 @@
 
 using namespace cv;
 
+
+Mat ArmorFinder::getNumberPic(Mat &src, const Rect &rect) {
+    return src(rect);
+}

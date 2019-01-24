@@ -8,6 +8,11 @@ using std::endl;
 int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
     src_raw_left_ = src_left.clone();
     src_raw_right_ = src_right.clone();
+    if(src_raw_left_.type() == CV_8UC3)
+    {
+        cvtColor(src_raw_left_, src_raw_left_, CV_RGB2GRAY);
+        cvtColor(src_raw_right_, src_raw_right_, CV_RGB2GRAY);
+    }
 
 //    showTwoImages("before split", src_raw_left_, src_raw_right_);
 //    imagePreprocess(src_left, src_right);   // to split blue and red
@@ -16,8 +21,8 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
 
     switch (cur_state_) {
         case SEARCHING_TARGET:
-            if (stateSearchingTarget(src_raw_left_, src_raw_left_)) {
-                target_found_frame_cnt++;
+            if (stateSearchingTarget(src_left, src_right)) {
+                //target_found_frame_cnt++;
             } else {
                 target_found_frame_cnt = 0;
             }
@@ -40,13 +45,14 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
                 total_contour_area_right_ = countNonZero(roi_right);
 
 
-//                trackInit(kcf_tracker_left_, src_raw_left_, armor_box_on_raw_left_);
-//                trackInit(kcf_tracker_right_, src_raw_right_, armor_box_on_raw_right_);
-//                transferState(TRACKING_TARGET);
-//                std::cout<<"dive into tracking"<<std::endl;
-//todo:fix bug: Assertion `0' failed.Aborted (core dumped)
+                trackInit(kcf_tracker_left_, src_raw_left_, armor_box_on_raw_left_);
+                trackInit(kcf_tracker_right_, src_raw_right_, armor_box_on_raw_right_);
+                transferState(TRACKING_TARGET);
+                std::cout<<"dive into tracking"<<std::endl;
+
             }
             break;
+
         case TRACKING_TARGET:
             if (!stateTrackingTarget(src_raw_left_, src_raw_right_)) {
                 std::cout << "jump out tracking" << endl;
@@ -54,6 +60,7 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
             }
             break;
         case STAND_BY:
+
             stateStandBy();
             transferState(SEARCHING_TARGET);
             break;

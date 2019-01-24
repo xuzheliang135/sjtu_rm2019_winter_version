@@ -19,6 +19,7 @@
 #include <uart/uart.h>
 #include <tracker/kcftracker.hpp>
 #include "tracker/tracker.h"
+#include "predictor/predictor_curve_fitting.h"
 
 using std::vector;
 
@@ -51,20 +52,18 @@ private:
     ArmorPridictParam armor_predict_param_;
     StateMachineParam state_machine_param_;
     CalibrateParam calibrate_param_;
-
-    std::vector<LightBlob> light_blobs_left_light, light_blobs_right_light;
-    std::vector<LightBlob> light_blobs_left_color, light_blobs_right_color;
-    std::vector<LightBlob> light_blobs_left_real, light_blobs_right_real;
-    cv::Rect2d armor_box_left_, armor_box_right_;
-    cv::Point3d armor_space_position_;
     TrackingParam track_param_;
 
-    std::vector<LightBlob> light_blobs_left_, light_blobs_right_;
-    cv::Point3d armor_space_last_position_;
-    std::vector<cv::Point3d> armor_history_positions_;
-    cv::Point3d armor_predicted_position_;
+    std::vector<LightBlob> light_blobs_left_light_, light_blobs_right_light_;
+    std::vector<LightBlob> light_blobs_left_color_, light_blobs_right_color_;
+    std::vector<LightBlob> light_blobs_left_real_, light_blobs_right_real_;
+
+    cv::Rect2d armor_box_left_, armor_box_right_;
+
+    std::vector<cv::Rect2d> armor_boxes_left_, armor_boxes_right_;
 
     int target_found_frame_cnt, target_unfound_frame_cnt;
+
     StateMachine cur_state_;
 
     ArmorType armor_type_;
@@ -83,20 +82,23 @@ private:
     double total_contour_area_right_;
     double total_contour_area_left_;
 
+    CurveFitting curve_fitting_;
+    cv::Point3d armor_space_position_;
+    cv::Point3d armor_space_last_position_;
+    std::vector<cv::Point3d> armor_history_positions_;
+    cv::Point3d armor_predicted_position_;
+    std::vector<clock_t> time_serial;
+
+
 public:
     void setEnemyColor(int color);
     void calibrate(cv::Mat &src_left, cv::Mat &src_right);
-    float TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO;
-
 
 private:
 
     void initCalibrateParam();
 
-
-
     void initLightParam();
-
 
     void initLightCoupleParam();
 
@@ -122,7 +124,15 @@ private:
 
     void splitBayerBG(cv::Mat &src, cv::Mat &blue, cv::Mat &red);
 
-    void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right);
+    void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right, cv::Mat &src_output_left, cv::Mat &src_output_right);
+
+    bool piplineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right, std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right);
+
+    void piplineLightBlobPreprocess(cv::Mat &InOutput);
+
+public:
+    bool matchTwoArmorBox(vector<cv::Rect2d> &armor_box_list_left, vector<cv::Rect2d> &armor_box_list_right,
+            cv::Rect2d &armor_box_left, cv::Rect2d &armor_box_right);
 
 public:
 

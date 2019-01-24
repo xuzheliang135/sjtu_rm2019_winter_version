@@ -33,6 +33,8 @@ private:
 public:
     Uart();
     void sendTarget(float x, float y ,float z);
+    void countFPS();
+
 };
 
 
