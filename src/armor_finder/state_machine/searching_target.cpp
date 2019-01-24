@@ -18,10 +18,16 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
     matchLightBlobVector(light_blobs_left_real_, armor_boxes_left_);
     matchLightBlobVector(light_blobs_right_real_, armor_boxes_right_);
     showArmorBoxVector("armor boxes", src_left_light, armor_boxes_left_, src_right_light, armor_boxes_right_);
-
+    for (auto &armor_box:armor_boxes_left_) {
+        armor_num_left.emplace_back(recognize_digits(src_raw_left_(armor_box)));
+    }
+    for (auto &armor_box:armor_boxes_right_) {
+        armor_num_right.emplace_back(recognize_digits(src_raw_right_(armor_box)));
+    }
 
     bool state_match = matchTwoArmorBox(armor_boxes_left_, armor_boxes_right_, armor_box_left_, armor_box_right_);
     if(!state_match) {return false;}
+
 
     /********************** convert to 3d coordinate *********************************/
     convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
