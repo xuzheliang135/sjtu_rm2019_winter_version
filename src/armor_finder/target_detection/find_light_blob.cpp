@@ -116,6 +116,7 @@ bool ArmorFinder::isValidLightContour(const vector<Point> &light_contour) {
 
 bool ArmorFinder::piplineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src_right_light,
         std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right) {
+
     piplineLightBlobPreprocess(src_left_light);
     piplineLightBlobPreprocess(src_right_light);
 

@@ -128,7 +128,7 @@ private:
 
     bool piplineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right, std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right);
 
-    void piplineLightBlobPreprocess(cv::Mat &);
+    void piplineLightBlobPreprocess(cv::Mat &InOutput);
 
 public:
     bool matchTwoArmorBox(vector<cv::Rect2d> &armor_box_list_left, vector<cv::Rect2d> &armor_box_list_right,

@@ -12,6 +12,7 @@
 #include "camera/camera_wrapper.h"
 #include "camera/video_wrapper.h"
 #include "camera/wrapper_head.h"
+#include "tools/calibrate_tool.h"
 
 
 #include <time.h>
@@ -63,11 +64,16 @@ int main()
 
         while (video->read(src_left, src_right))
         {
-            //armor_finder.showTwoImages("raw", src_left, src_right);
-            armor_finder.run(src_left, src_right);
-            waitKey(1);
+            armor_finder.showTwoImages("raw", src_left, src_right);
+            //armor_finder.run(src_left, src_right);
+            if(tool_for_calibrate(src_left, src_right)){
+                waitKey(0);
+                return 0;
+            }
+            waitKey(500);
 
         }
+
         delete video;
         cout<<"Program fails. Restarting"<<endl;
 
