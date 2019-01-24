@@ -124,9 +124,9 @@ private:
 
     void splitBayerBG(cv::Mat &src, cv::Mat &blue, cv::Mat &red);
 
-    void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right);
+    void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right, cv::Mat &src_output_left, cv::Mat &src_output_right);
 
-    bool piplineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right);
+    bool piplineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right, std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right);
 
     void piplineLightBlobPreprocess(cv::Mat &);
 

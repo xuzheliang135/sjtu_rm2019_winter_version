@@ -114,7 +114,8 @@ bool ArmorFinder::isValidLightContour(const vector<Point> &light_contour) {
              cur_contour_area < light_blob_param_.CONTOUR_AREA_MIN);
 }
 
-bool ArmorFinder::piplineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src_right_light) {
+bool ArmorFinder::piplineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src_right_light,
+        std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right) {
     piplineLightBlobPreprocess(src_left_light);
     piplineLightBlobPreprocess(src_right_light);
 
@@ -133,8 +134,8 @@ bool ArmorFinder::piplineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src_
     findLightBlob(src_left_, light_blobs_left_color_);
     findLightBlob(src_right_, light_blobs_right_color_);
 
-    judge_light_color(light_blobs_left_light_, light_blobs_left_color_, light_blobs_left_real_);
-    judge_light_color(light_blobs_right_light_, light_blobs_right_color_, light_blobs_right_real_);
+    judge_light_color(light_blobs_left_light_, light_blobs_left_color_, light_blobs_real_left);
+    judge_light_color(light_blobs_right_light_, light_blobs_right_color_, light_blobs_real_right);
 
-    return !(light_blobs_left_real_.empty() || light_blobs_right_real_.empty());
+    return !(light_blobs_real_left.empty() || light_blobs_real_right.empty());
 }

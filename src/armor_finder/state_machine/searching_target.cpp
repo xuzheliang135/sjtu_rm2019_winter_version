@@ -9,9 +9,9 @@ using namespace std;
 bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_right_light) {
 
     /************************** find light blobs **********************************************/
-    imagePreprocess(src_left_light, src_right_light);  // bayer hacking, to split blue and red
+    imagePreprocess(src_left_light, src_right_light, src_left_, src_right_);  // bayer hacking, to split blue and red
 
-    piplineForFindLightBlob(src_left_light, src_right_light);
+    piplineForFindLightBlob(src_left_light, src_right_light, light_blobs_left_real_, light_blobs_right_real_);
 
     /*************************** match light blobs***********************************/
 
@@ -34,9 +34,10 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
 
 
     /*********************** send position by uart **************************************/
-    cout << armor_space_position_ << endl;
+
 
     armor_space_position_.x -= stereo_camera_param_.CAMERA_DISTANCE/2;
+    cout << armor_space_position_ << endl;
 
     sendTargetByUart(
             static_cast<float>(armor_space_position_.x),
