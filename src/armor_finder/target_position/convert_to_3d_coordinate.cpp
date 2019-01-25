@@ -7,11 +7,9 @@ using std::cout;
 using std::endl;
 
 void ArmorFinder::initCameraParam() {
-    stereo_camera_param_.CAMERA_DISTANCE = 17;  // cm
+    stereo_camera_param_.CAMERA_DISTANCE = 19;  // cm
     stereo_camera_param_.FOCUS = 0.36;          // 4mm = 0.4cm
-    //stereo_camera_param_.FOCUS = 666.7 ;          //
-    stereo_camera_param_.LENGTH_PER_PIXAL = 0.48*2/640;  //0.3mm/640
-    //stereo_camera_param_.LENGTH_PER_PIXAL = 1;
+    stereo_camera_param_.LENGTH_PER_PIXAL = 0.48/640;
 
 }
 
@@ -138,21 +136,21 @@ bool ArmorFinder::convertToStereoscopicCoordinate(
     currPoint2.y = armor_box_right.y;
 
 
-    myCornerSubPix(src_raw_left_, currPoint1, Size(40,40),Size(-1,-1),criteria);
-    myCornerSubPix(src_raw_right_,currPoint2, Size(40,40),Size(-1,-1),criteria);
+    myCornerSubPix(src_raw_left_, currPoint1, Size(20,20),Size(-1,-1),criteria);
+    myCornerSubPix(src_raw_right_,currPoint2, Size(20,20),Size(-1,-1),criteria);
 
-
+//    cout<<armor_box_left<<" "<<armor_box_right<<endl;
+//    cout<<currPoint1<<" "<<currPoint2<<endl;
     double disparity; //视差
-    disparity = abs(currPoint1.x - currPoint2.x);
-    space_position.z = -1.167*log(disparity)+5.2268;
-    space_position.x = space_position.z * (currPoint1.x - SRC_WIDTH/2.) *
+    disparity = abs(currPoint1.x - currPoint2.x) * stereo_camera_param_.LENGTH_PER_PIXAL;
+    //disparity = abs(armor_box_left.x - armor_box_right.x) * stereo_camera_param_.LENGTH_PER_PIXAL;
+
+    //space_position.z = (-1.167*log(abs(currPoint1.x - currPoint2.x))+5.2268)*100;
+    space_position.z = stereo_camera_param_.CAMERA_DISTANCE * stereo_camera_param_.FOCUS / disparity ;
+    space_position.x = space_position.z * (armor_box_left.x + armor_box_left.width/2 - 320) *
                        stereo_camera_param_.LENGTH_PER_PIXAL / stereo_camera_param_.FOCUS;
-    space_position.y = space_position.z * (currPoint1.y - SRC_HEIGHT/2.) *
+    space_position.y = space_position.z * (armor_box_right.y + armor_box_right.height/2 - 240) *
                        stereo_camera_param_.LENGTH_PER_PIXAL / stereo_camera_param_.FOCUS;
-    double x_right = space_position.z * (armor_box_right.x - SRC_WIDTH/2.) *
-                     stereo_camera_param_.LENGTH_PER_PIXAL / stereo_camera_param_.FOCUS;
-    double y_right = space_position.z * (armor_box_right.y - SRC_HEIGHT/2.) *
-                     stereo_camera_param_.LENGTH_PER_PIXAL / stereo_camera_param_.FOCUS;
 
     return true;
 }

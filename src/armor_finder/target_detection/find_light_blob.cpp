@@ -76,10 +76,10 @@ void preprocessColor(cv::Mat &src_left, cv::Mat &src_right) {
     dilate(src_left, src_left, kernel_dilate2);
     dilate(src_right, src_right, kernel_dilate2);
 
-//    float alpha = 1.5;
-//    int beta = 0;
-//    src_left.convertTo(src_left, -1, alpha, beta);
-//    src_right.convertTo(src_right, -1, alpha, beta);
+    float alpha = 1.5;
+    int beta = 0;
+    src_left.convertTo(src_left, -1, alpha, beta);
+    src_right.convertTo(src_right, -1, alpha, beta);
 }
 
 bool ArmorFinder::findLightBlob(const cv::Mat &src, vector<LightBlob> &light_blobs) {

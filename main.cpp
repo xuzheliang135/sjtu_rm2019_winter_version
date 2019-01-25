@@ -65,15 +65,10 @@ int main()
         clock_t last_time = clock();
         while (video->read(src_left, src_right))
         {
-            cout<<(clock() - last_time) * 1000.0 / CLOCKS_PER_SEC<<endl;
-            last_time = clock();
-            armor_finder.showTwoImages("raw", src_left, src_right);
-//            //armor_finder.run(src_left, src_right);
-//            if(tool_for_calibrate(src_left, src_right)){
-//                waitKey(0);
-//                return 0;
-//            }
-//            waitKey(500);
+            //cout<<(clock() - last_time) * 1000.0 / CLOCKS_PER_SEC<<endl;
+            //last_time = clock();
+            //armor_finder.showTwoImages("raw", src_left, src_right);
+            armor_finder.run(src_left, src_right);
             waitKey(1);
 
         }
