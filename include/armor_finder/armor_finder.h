@@ -75,7 +75,7 @@ private:
 
     cv::Mat src_blue0, src_red0, src_blue1, src_red1;
     cv::Mat src_raw_right_;
-    cv::Mat &src_raw_left_;
+    cv::Mat src_raw_left_;
     cv::Rect2d armor_box_on_raw_left_, armor_box_on_raw_right_;
     cv::Mat src_bin_left_, src_bin_right_;
 
@@ -90,6 +90,9 @@ private:
     std::vector<cv::Point3d> armor_history_positions_;
     cv::Point3d armor_predicted_position_;
     std::vector<clock_t> time_serial;
+    double position_diff;
+
+
 
 
 public:
@@ -133,6 +136,8 @@ private:
     void piplineLightBlobPreprocess(cv::Mat &InOutput);
 
     int recognize_digits(cv::Mat image);
+
+    bool targetPositionStreamControl(float x, float y);
 
 public:
     bool matchTwoArmorBox(vector<cv::Rect2d> &armor_box_list_left, vector<cv::Rect2d> &armor_box_list_right,
@@ -189,7 +194,7 @@ public:
 
 
 public:
-    void sendTargetByUart(float x, float y, float z);
+    bool sendTargetByUart(float x, float y, float z);
 
 private:
     /**

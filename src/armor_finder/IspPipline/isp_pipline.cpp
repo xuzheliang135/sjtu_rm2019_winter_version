@@ -7,7 +7,8 @@ void ArmorFinder::ispPipline(cv::Mat &src) {
 
 }
 
-void ArmorFinder::imagePreprocess(cv::Mat &src_left_input, cv::Mat &src_right_input,  cv::Mat &src_output_left, cv::Mat &src_output_right) {
+void ArmorFinder::imagePreprocess(cv::Mat &src_left_input, cv::Mat &src_right_input,
+        cv::Mat &src_output_left, cv::Mat &src_output_right) {
     if(src_left_input.type() == CV_8UC1)
     {
         splitBayerBG(src_left_input, src_blue0, src_red0);

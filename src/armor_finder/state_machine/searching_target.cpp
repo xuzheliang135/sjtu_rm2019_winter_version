@@ -23,6 +23,8 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
     bool state_match = matchTwoArmorBox(armor_boxes_left_, armor_boxes_right_, armor_box_left_, armor_box_right_);
     if(!state_match) {return false;}
 
+
+
     /********************** convert to 3d coordinate *********************************/
     convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
 
@@ -39,11 +41,11 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
     armor_space_position_.x -= stereo_camera_param_.CAMERA_DISTANCE/2;
    // cout << armor_space_position_ << endl;
     armor_space_position_.z = 300;
-    sendTargetByUart(
+    return sendTargetByUart(
             static_cast<float>(armor_space_position_.x),
             static_cast<float>(armor_space_position_.y),
             static_cast<float>(armor_space_position_.z));
 
-    return true;
+
 
 }

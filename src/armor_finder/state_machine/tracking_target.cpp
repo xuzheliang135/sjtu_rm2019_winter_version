@@ -48,7 +48,7 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     armor_space_position_.x -= stereo_camera_param_.CAMERA_DISTANCE/2;
     //std::cout << armor_space_position_ << std::endl;
     armor_space_position_.z = 300;
-    sendTargetByUart(
+    return sendTargetByUart(
             static_cast<float>(armor_space_position_.x),
             static_cast<float>(armor_space_position_.y),
             static_cast<float>(armor_space_position_.z));

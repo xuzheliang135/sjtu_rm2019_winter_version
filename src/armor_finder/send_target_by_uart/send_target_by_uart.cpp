@@ -9,8 +9,13 @@ void ArmorFinder::initUartParam() {
 }
 
 
-void ArmorFinder::sendTargetByUart(float x, float y, float z) {
+bool ArmorFinder::sendTargetByUart(float x, float y, float z) {
+//    if(!targetPositionStreamControl(x, y)){
+//        return false;
+//    }
+
     uart_.sendTarget(x, y, z);
+    return true;
 }
 
 
