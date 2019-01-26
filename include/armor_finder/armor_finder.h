@@ -67,16 +67,13 @@ private:
 
     StateMachine cur_state_;
 
-    ArmorType armor_type_;
 
     Uart uart_;
 
     KCFTracker kcf_tracker_left_, kcf_tracker_right_;
 
     cv::Mat src_blue0, src_red0, src_blue1, src_red1;
-    cv::Mat src_raw_right_;
-    cv::Mat src_raw_left_;
-    cv::Rect2d armor_box_on_raw_left_, armor_box_on_raw_right_;
+    cv::Mat src_raw_right_, src_raw_left_;
     cv::Mat src_bin_left_, src_bin_right_;
 
     int enemy_color_;
@@ -84,7 +81,7 @@ private:
     double total_contour_area_right_;
     double total_contour_area_left_;
 
-    CurveFitting curve_fitting_;
+
     cv::Point3d armor_space_position_;
     cv::Point3d armor_space_last_position_;
     std::vector<cv::Point3d> armor_history_positions_;
@@ -131,11 +128,13 @@ private:
 
     void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right, cv::Mat &src_output_left, cv::Mat &src_output_right);
 
-    bool piplineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right, std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right);
+    bool pipelineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right, std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right);
 
-    void piplineLightBlobPreprocess(cv::Mat &InOutput);
+    void pipelineLightBlobPreprocess(cv::Mat &InOutput);
 
-    int recognize_digits(cv::Mat image);
+    bool pipelineTargetPosition(cv::Rect2d &armor_box_left, cv::Rect2d &armor_box_right);
+
+    int recognize_digits(cv::Mat &image);
 
     bool targetPositionStreamControl(float x, float y);
 
@@ -147,7 +146,6 @@ public:
 
     void clear_light_blobs_vector();
 
-    void ispPipline(cv::Mat &src);
 
 public:
     /**
@@ -160,14 +158,7 @@ public:
     bool findLightBlob(const cv::Mat &src, std::vector<LightBlob> &light_blobs);
 
 public:
-    /**
-     * @name    matchLightBlob()
-     * @brief   match light blobs to find a valid armor
-     * @param   light_blobs: input vector of light blobs
-     * @param   armor_box_: output armor rect
-     * @return  bool value: whether it finds a armor box
-     */
-    bool matchLightBlob(std::vector<LightBlob> &light_blobs, cv::Rect2d &armor_box);
+
 
     bool matchLightBlobVector(std::vector<LightBlob> &light_blobs, vector<cv::Rect2d> &armor_box);
 

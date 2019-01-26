@@ -11,7 +11,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
     /************************** find light blobs **********************************************/
     imagePreprocess(src_left_light, src_right_light, src_left_, src_right_);  // bayer hacking, to split blue and red
 
-    piplineForFindLightBlob(src_left_light, src_right_light, light_blobs_left_real_, light_blobs_right_real_);
+    pipelineForFindLightBlob(src_left_light, src_right_light, light_blobs_left_real_, light_blobs_right_real_);
 
     /*************************** match light blobs***********************************/
 
@@ -25,27 +25,8 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
 
 
 
-    /********************** convert to 3d coordinate *********************************/
-    convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
-
-    /********************** convert 3d coordinate back to two camera vision ***************/
-    //showSpacePositionBackToStereoVision(src_left, src_right, armor_space_position_);
-
-    /******************** predict the armor moving path *******************************/
-//    predictArmorPosition(armor_space_position_, armor_predicted_position_);
-
-
-    /*********************** send position by uart **************************************/
-
-
-    armor_space_position_.x -= stereo_camera_param_.CAMERA_DISTANCE/2;
-   // cout << armor_space_position_ << endl;
-    armor_space_position_.z = 300;
-    return sendTargetByUart(
-            static_cast<float>(armor_space_position_.x),
-            static_cast<float>(armor_space_position_.y),
-            static_cast<float>(armor_space_position_.z));
-
+    /********************** convert to 3d coordinate and send it by uart *********************************/
+return pipelineTargetPosition(armor_box_left_, armor_box_right_);
 
 
 }

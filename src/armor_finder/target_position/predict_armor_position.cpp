@@ -32,15 +32,8 @@ void ArmorFinder::manageHistorySpacePosition(const cv::Point3d &space_position) 
 bool ArmorFinder::predictArmorPosition(cv::Point3d &armor_position,
                                         cv::Point3d &armor_predicted_position)
 {
-    manageHistorySpacePosition(armor_position);
 
-    vector<clock_t> data_time_serial;
-    for(int i = 0; i < time_serial.size(); i++)
-    {
-        data_time_serial.push_back(time_serial[i] - time_serial.back());
-    }
-    curve_fitting_.predictPositionOverTime(armor_history_positions_, data_time_serial,
-            armor_predict_param_.time_predict, armor_predicted_position);
+
 
     return true;
 }

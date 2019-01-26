@@ -2,10 +2,7 @@
 
 using namespace cv;
 
-void ArmorFinder::ispPipline(cv::Mat &src) {
 
-
-}
 
 void ArmorFinder::imagePreprocess(cv::Mat &src_left_input, cv::Mat &src_right_input,
         cv::Mat &src_output_left, cv::Mat &src_output_right) {

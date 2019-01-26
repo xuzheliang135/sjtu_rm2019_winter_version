@@ -121,7 +121,9 @@ int Uart::set_opt(int fd, int nSpeed, int nBits, char nEvent, int nStop) {
 void Uart::sendTarget(float x, float y, float z) {
     //std::cout<<x<<" "<<y<<" "<<z<<endl;
     static short x_tmp, y_tmp, z_tmp;
+
     countFPS();
+
     x_tmp= static_cast<short>(x * (32768 - 1) / 100);
     y_tmp= static_cast<short>(y * (32768 - 1) / 100);
     z_tmp= static_cast<short>(z * (32768 - 1) / 1000);

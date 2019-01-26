@@ -8,8 +8,8 @@
 const int ENEMY_BLUE = 123;
 const int ENEMY_RED = 456;
 
-const int SRC_WIDTH = 320;
-const int SRC_HEIGHT = 240;
+const int SRC_WIDTH = 640;
+const int SRC_HEIGHT = 480;
 
 
 #endif //SJTU_RM2019_WINTER_VERSION_CONSTANT_H

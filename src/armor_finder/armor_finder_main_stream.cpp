@@ -14,10 +14,6 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
         cvtColor(src_raw_right_, src_raw_right_, CV_RGB2GRAY);
     }
 
-//    showTwoImages("before split", src_raw_left_, src_raw_right_);
-    imagePreprocess(src_left, src_right, src_left_, src_right_);   // to split blue and red
-    //showTwoImages("after split ", src_left_, src_right_);
-
 
     switch (cur_state_) {
         case SEARCHING_TARGET:
@@ -27,10 +23,6 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
                 target_found_frame_cnt = 0;
             }
             if (target_found_frame_cnt >= state_machine_param_.THRESHOLD_FOUND_SEARCHING_TO_TRACKING) {
-//                armor_box_on_raw_left_ = armor_box_left_ + Point2d(armor_box_left_.x, armor_box_left_.y) +
-//                                         Size2d(armor_box_left_.width, armor_box_left_.height);
-//                armor_box_on_raw_right_ = armor_box_right_ + Point2d(armor_box_right_.x, armor_box_right_.y) +
-//                                          Size2d(armor_box_right_.width, armor_box_right_.height);
                 if ((Rect2d(0, 0, 640, 480) & armor_box_left_).area() < armor_box_left_.area() ||
                     (Rect2d(0, 0, 640, 480) & armor_box_right_).area() <
                             armor_box_right_.area()) { // avoid box touching edges
@@ -43,7 +35,6 @@ int ArmorFinder::run(cv::Mat &src_left, cv::Mat &src_right) {
                 threshold(roi_right, roi_right, track_param_.THRESHOLD_FOR_COUNT_NON_ZERO, 255, THRESH_BINARY);
                 total_contour_area_left_ = countNonZero(roi_left);
                 total_contour_area_right_ = countNonZero(roi_right);
-
 
                 trackInit(kcf_tracker_left_, src_raw_left_, armor_box_left_);
                 trackInit(kcf_tracker_right_, src_raw_right_, armor_box_right_);

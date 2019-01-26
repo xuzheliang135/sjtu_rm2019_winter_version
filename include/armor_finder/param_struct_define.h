@@ -67,12 +67,6 @@ struct ArmorPridictParam{
     clock_t time_predict;
 };
 
-enum ArmorType {
-    NOT_FOUND,
-    SMALL_ARMOR,
-    LARGE_ARMOR,
-    ARMOR_TYPE_SIZE
-};
 
 enum StateMachine{
     STAND_BY,

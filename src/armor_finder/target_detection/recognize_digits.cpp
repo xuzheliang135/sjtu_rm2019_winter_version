@@ -41,7 +41,7 @@ double compare(Mat &src, Mat &sample);
 
 void Threshold(Mat &src, Mat &sample, int m);
 
-int ArmorFinder::recognize_digits(Mat image) {
+int ArmorFinder::recognize_digits(Mat &image) {
     const Mat &srcImage = image;
     Mat dstImage, grayImage, Image;
     srcImage.copyTo(dstImage);

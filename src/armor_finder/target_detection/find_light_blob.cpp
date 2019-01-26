@@ -20,7 +20,7 @@ void ArmorFinder::initLightParam() {
 
 
 
-void ArmorFinder::piplineLightBlobPreprocess(Mat &src) {
+void ArmorFinder::pipelineLightBlobPreprocess(Mat &src) {
     src -= light_blob_param_.PREPROCESS_SUBSTRACT_FACTOR;
     src *= light_blob_param_.PREPROCESS_MULTIPLY_FACTOR;
     src -= light_blob_param_.PREPROCESS_SUBSTRACT_FACTOR;
@@ -114,11 +114,11 @@ bool ArmorFinder::isValidLightContour(const vector<Point> &light_contour) {
              cur_contour_area < light_blob_param_.CONTOUR_AREA_MIN);
 }
 
-bool ArmorFinder::piplineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src_right_light,
+bool ArmorFinder::pipelineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src_right_light,
         std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right) {
 
-    piplineLightBlobPreprocess(src_left_light);
-    piplineLightBlobPreprocess(src_right_light);
+    pipelineLightBlobPreprocess(src_left_light);
+    pipelineLightBlobPreprocess(src_right_light);
 
     preprocessColor(src_left_, src_right_);//腐蚀，膨胀
 

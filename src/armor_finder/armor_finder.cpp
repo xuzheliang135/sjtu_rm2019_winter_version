@@ -10,7 +10,6 @@ using std::vector;
 ArmorFinder::ArmorFinder():
                 kcf_tracker_left_(false, true, false, false),
                 kcf_tracker_right_(false, true, false, false),
-                curve_fitting_(),
                 uart_(),
                 src_blue0(SRC_HEIGHT, SRC_WIDTH, CV_8UC1),
                 src_blue1(SRC_HEIGHT, SRC_WIDTH, CV_8UC1),
