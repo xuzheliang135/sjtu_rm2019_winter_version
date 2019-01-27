@@ -87,7 +87,8 @@ private:
     std::vector<cv::Point3d> armor_history_positions_;
     cv::Point3d armor_predicted_position_;
     std::vector<clock_t> time_serial;
-    double position_diff;
+
+    double position_diff = 0;
 
 
 
@@ -126,17 +127,17 @@ private:
 
     void splitBayerBG(cv::Mat &src, cv::Mat &blue, cv::Mat &red);
 
-    void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right, cv::Mat &src_output_left, cv::Mat &src_output_right);
+    void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right);
 
     bool pipelineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right, std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right);
 
     void pipelineLightBlobPreprocess(cv::Mat &InOutput);
 
-    bool pipelineTargetPosition(cv::Rect2d &armor_box_left, cv::Rect2d &armor_box_right);
-
     int recognize_digits(cv::Mat &image);
 
-    bool targetPositionStreamControl(float x, float y);
+    bool targetSearchPositionStreamControlWillSkip(double x, double y);
+
+    bool targetTrackPositionStreamControl(cv::Point3d &armor_position);
 
 public:
     bool matchTwoArmorBox(vector<cv::Rect2d> &armor_box_list_left, vector<cv::Rect2d> &armor_box_list_right,

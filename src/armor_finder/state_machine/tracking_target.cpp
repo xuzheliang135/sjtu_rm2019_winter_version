@@ -32,7 +32,15 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
     //showArmorBox("tracking boxes", src_left, armor_box_left_, src_right, armor_box_right_);
 
+    /********************** convert to 3d coordinate *********************************/
+    convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
 
-    /********************** convert to 3d coordinate and send it by uart *********************************/
-    return pipelineTargetPosition(armor_box_left_, armor_box_right_);
+    /*************** a predict function for moving target with only constant speed *******************/
+    targetTrackPositionStreamControl(armor_space_position_);
+
+    /********************** send it by uart and adjust the original point to the center *************/
+    return sendTargetByUart(
+            static_cast<float>(armor_space_position_.x),
+            static_cast<float>(armor_space_position_.y),
+            static_cast<float>(armor_space_position_.z));
 }

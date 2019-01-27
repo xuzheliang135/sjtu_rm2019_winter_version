@@ -120,9 +120,9 @@ bool ArmorFinder::pipelineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src
     pipelineLightBlobPreprocess(src_left_light);
     pipelineLightBlobPreprocess(src_right_light);
 
-    preprocessColor(src_left_, src_right_);//腐蚀，膨胀
-
-    //showTwoImages("color_after_erode", src_left_, src_right_);
+    preprocessColor(src_left_, src_right_); //腐蚀，膨胀
+//    showTwoImages("small size", src_left_, src_right_);
+//    showTwoImages("color_after_erode", src_left_, src_right_);
 
     resize(src_left_, src_left_, Size(640, 480));
     resize(src_right_, src_right_, Size(640, 480));
@@ -131,12 +131,18 @@ bool ArmorFinder::pipelineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src
 
     findLightBlob(src_left_light, light_blobs_left_light_);
     findLightBlob(src_right_light, light_blobs_right_light_);
+//    showContours("lightbolbs light", src_left_light, light_blobs_left_light_, src_right_light, light_blobs_right_light_);
 
     findLightBlob(src_left_, light_blobs_left_color_);
     findLightBlob(src_right_, light_blobs_right_color_);
+//    showContours("lightbolbs color", src_left_, light_blobs_left_color_, src_right_, light_blobs_right_color_);
+
+
 
     judge_light_color(light_blobs_left_light_, light_blobs_left_color_, light_blobs_real_left);
     judge_light_color(light_blobs_right_light_, light_blobs_right_color_, light_blobs_real_right);
+
+//    showContours("light blobs real", src_raw_left_, light_blobs_real_left, src_raw_right_, light_blobs_real_right);
 
     return !(light_blobs_real_left.empty() || light_blobs_real_right.empty());
 }

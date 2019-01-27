@@ -149,6 +149,10 @@ bool ArmorFinder::convertToStereoscopicCoordinate(
     space_position.y = space_position.z * (armor_box_right.y + armor_box_right.height/2 - 240) *
                        stereo_camera_param_.LENGTH_PER_PIXAL / stereo_camera_param_.FOCUS;
 
+    armor_space_position_.x -= stereo_camera_param_.CAMERA_DISTANCE/2;
+    //std::cout << armor_space_position_ << std::endl;
+    armor_space_position_.z = 300;
+
     return true;
 }
 
