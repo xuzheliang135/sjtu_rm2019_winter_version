@@ -21,6 +21,9 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 
+/**
+ * @brief the tracker is implemented well and we just use it
+ */
 class Tracker
 {
 public:

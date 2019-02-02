@@ -13,22 +13,29 @@
 
 #include "wrapper_head.h"
 
-
+/**
+ * @brief a class to read images from video files
+ */
 class VideoWrapper:public WrapperHead {
 public:
+    /**
+     * @brief open two video files
+     * @param filename0
+     * @param filename1
+     */
     VideoWrapper(const std::string& filename0, const std::string& filename1);
     ~VideoWrapper();
 
 
     /**
-     * @brief initialize cameras
+     * @brief
      * @return bool value: whether it success
      */
     bool init() final;
 
 
     /**
-     * @brief read images from camera
+     * @brief read images from video files
      * @param src_left : output source video of left camera
      * @param src_right : output source video of right camera
      * @return bool value: whether the reading is successful

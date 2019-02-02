@@ -36,6 +36,12 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+/**
+ * @brief a tool for calibrate, but it may not work properly now
+ * @param src_left
+ * @param src_right
+ * @return
+ */
 bool tool_for_calibrate(const cv::Mat &src_left, const cv::Mat &src_right);
 
 

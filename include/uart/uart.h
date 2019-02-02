@@ -20,7 +20,9 @@
 //#include <opencv2/core/core.hpp>
 
 
-
+/**
+ * The uart is used to send messages to lower computer
+ */
 class Uart {
 private:
     int fd;

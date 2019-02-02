@@ -20,11 +20,9 @@ void ArmorFinder::initArmorPredictParam(){
 void ArmorFinder::manageHistorySpacePosition(const cv::Point3d &space_position) {
     clock_t cur_time = clock();
     armor_history_positions_.push_back(space_position);
-    time_serial.push_back(cur_time);
     if(armor_history_positions_.size() > armor_predict_param_.ARMOR_POSITION_HISTORY_MAX_LENGTH)
     {
         armor_history_positions_.erase(armor_history_positions_.begin());
-        time_serial.erase(time_serial.begin());
     }
 }
 
