@@ -8,7 +8,7 @@ void ArmorFinder::initUartParam() {
 
 bool ArmorFinder::sendTargetByUart(float x, float y, float z) {
 
-    std::cout<<x<<" "<<y<<" "<<z<<std::endl;
+    //std::cout<<x<<" "<<y<<" "<<z<<std::endl;
     uart_.sendTarget(x, y, z);
     return true;
 }

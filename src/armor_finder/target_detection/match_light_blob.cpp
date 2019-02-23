@@ -106,7 +106,8 @@ bool lengthJudge(const LightBlob &light_blob_i, const LightBlob &light_blob_j) {
     double side_length;
     Point2f centers = light_blob_i.rect.center - light_blob_j.rect.center;
     side_length = sqrt(centers.ddot(centers));
-    return (side_length / light_blob_i.length < 3 && side_length / light_blob_i.length > 1);
+
+    return (side_length / light_blob_i.length < 6 && side_length / light_blob_i.length > 1);
 }
 
 bool lengthRatioJudge(const LightBlob &light_blob_i, const LightBlob &light_blob_j) {

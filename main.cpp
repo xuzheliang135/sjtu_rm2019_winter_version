@@ -15,7 +15,7 @@
 #include "tools/calibrate_tool.h"
 
 
-#include <time.h>
+#include <ctime>
 
 using namespace cv;
 using std::cin;
@@ -31,7 +31,7 @@ int main()
     int enemy_color = ENEMY_BLUE;
     int from_camera = 1;
     cout << "Input 1 for camera, 0 for video files" << endl;
-    cin >> from_camera;
+//    cin >> from_camera;
 
     while (true) {
 
@@ -53,25 +53,52 @@ int main()
         }
 
         Mat src_left, src_right;
+        Mat src_left_parallel, src_right_parallel;
 
         ArmorFinder armor_finder;
         armor_finder.setEnemyColor(enemy_color);
 
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 5; i++)
         {
             video->read(src_left, src_right); // to eliminate the initial noise images
+            video->read(src_left_parallel, src_right_parallel);
         }
-        cout<<"start working"<<endl;
-        clock_t last_time = clock();
-        while (video->read(src_left, src_right))
-        {
-            //cout<<(clock() - last_time) * 1000.0 / CLOCKS_PER_SEC << " ms per input frame."<<endl;
-            //last_time = clock();
-            //armor_finder.showTwoImages("raw", src_left, src_right);
-            armor_finder.run(src_left, src_right);
-            waitKey(1);
 
+        cout<<"start working"<<endl;
+//        time_t start = time(nullptr);
+//        int cnt = 0;
+        bool ok = true;
+        while (ok)
+        {
+
+#pragma omp parallel sections
+        {
+#pragma omp section
+            {ok = video->read(src_left, src_right);}
+#pragma omp section
+            {
+                //armor_finder.showTwoImages("raw", src_left_parallel, src_right_parallel);
+                armor_finder.run(src_left_parallel, src_right_parallel);
+            }
         }
+#pragma omp barrier
+
+#pragma omp parallel sections
+        {
+#pragma omp section
+            {ok = video->read(src_left_parallel, src_right_parallel);}
+#pragma omp section
+            {
+                //armor_finder.showTwoImages("raw", src_left, src_right);
+                armor_finder.run(src_left, src_right);
+            }
+        }
+#pragma omp barrier
+
+            waitKey(1);
+        }
+//        time_t end = time(nullptr);
+//        cout<<(double)(end - start) << "s."<<endl;
 
         delete video;
         cout<<"Program fails. Restarting"<<endl;

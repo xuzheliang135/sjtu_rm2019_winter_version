@@ -17,7 +17,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
 
     matchLightBlobVector(light_blobs_left_real_, armor_boxes_left_);
     matchLightBlobVector(light_blobs_right_real_, armor_boxes_right_);
-//    showArmorBoxVector("armor boxes", src_left_light, armor_boxes_left_, src_right_light, armor_boxes_right_);
+    //showArmorBoxVector("armor boxes", src_left_light, armor_boxes_left_, src_right_light, armor_boxes_right_);
 
 
     bool state_match = matchTwoArmorBox(armor_boxes_left_, armor_boxes_right_, armor_box_left_, armor_box_right_);
@@ -30,7 +30,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light, cv::Mat &src_rig
 
      //following lines are useful for aiming rotating target when the FPS is low
      //it will skip some frame when target is changing rapidly
-    if(targetSearchPositionStreamControlWillSkip(armor_box_left_.x, armor_box_right_.y)){
+    if(targetSearchPositionStreamControlWillSkip(armor_box_left_.x, armor_box_left_.y)){
         return false;
     }
 

@@ -30,7 +30,7 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right) {
             return false;
     }
 
-    //showArmorBox("tracking boxes", src_left, armor_box_left_, src_right, armor_box_right_);
+    showArmorBox("tracking boxes", src_left, armor_box_left_, src_right, armor_box_right_);
 
     /********************** convert to 3d coordinate *********************************/
     convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);

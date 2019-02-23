@@ -25,7 +25,7 @@ bool ArmorFinder::targetTrackPositionStreamControl(cv::Point3d &armor_position){
     double cur_diff = abs(armor_position.x - last_x);
     if(cur_diff <= 0.5 && abs(armor_position.x) > 5 ){
         armor_position.x *= 2;
-        std::cout<<" double position, abs of x"<<abs(armor_position.x)<<std::endl;
+        //std::cout<<" double position, abs of x"<<abs(armor_position.x)<<std::endl;
     }
     if(abs(armor_position.x) < 0.5)
         armor_position.x /= 5;

@@ -100,10 +100,10 @@ bool CameraWrapper::init() {
          CameraSetGamma、CameraSetConrast、CameraSetGain等设置图像伽马、对比度、RGB数字增益等等。
          CameraGetFriendlyName    CameraSetFriendlyName 获取/设置相机名称（该名称可写入相机硬件）
     */
-//    double exposure_time0, exposure_time1;
-//    CameraGetExposureTime(h_camera0, &exposure_time0);
-//    CameraGetExposureTime(h_camera1, &exposure_time1);
-//    cout<<"exposure time "<<exposure_time0<<" "<<exposure_time1<<endl;
+    double exposure_time0 = 0, exposure_time1 = 0;
+    CameraGetExposureTime(h_camera0, &exposure_time0);
+    CameraGetExposureTime(h_camera1, &exposure_time1);
+    cout<<"exposure time "<<exposure_time0<<" "<<exposure_time1<<endl;
 
     // 抗频闪
     CameraSetAntiFlick(h_camera0, true);
@@ -167,6 +167,11 @@ bool CameraWrapper::readRaw(cv::Mat &src0, cv::Mat &src1) {
         //否则再次调用CameraGetImageBuffer时，程序将被挂起一直阻塞，直到其他线程中调用CameraReleaseImageBuffer来释放了buffer
         CameraReleaseImageBuffer(h_camera0, pby_buffer0);
         CameraReleaseImageBuffer(h_camera1, pby_buffer1);
+
+//        double exposure_time0 = 0, exposure_time1 = 0;
+//        CameraGetExposureTime(h_camera0, &exposure_time0);
+//        CameraGetExposureTime(h_camera1, &exposure_time1);
+//        cout<<"exposure time "<<exposure_time0<<" "<<exposure_time1<<endl;
 
         return true;
     } else {

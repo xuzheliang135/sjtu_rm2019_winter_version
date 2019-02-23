@@ -128,6 +128,7 @@ void Uart::sendTarget(float x, float y, float z) {
     y_tmp= static_cast<short>(y * (32768 - 1) / 100);
     z_tmp= static_cast<short>(z * (32768 - 1) / 1000);
 
+
     buff[0] = 's';
     buff[1] = static_cast<char>((x_tmp >> 8) & 0xFF);
     buff[2] = static_cast<char>((x_tmp >> 0) & 0xFF);
@@ -146,7 +147,7 @@ void Uart::countFPS() {
     if(cur_time != t)
     {
         cur_time = t;
-        cout<<fps<<endl;
+        cout<<"FPS: "<<fps<<endl;
         fps = 0;
     }
     fps += 1;
