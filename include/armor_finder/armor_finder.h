@@ -42,7 +42,7 @@ public:
      * @param src_right : input
      * @return : bool value: whether it success.
      */
-    int run(cv::Mat &src_left, cv::Mat &src_right);
+    int run(cv::Mat &src_left);
 
 public:
     // for debug or recording
@@ -165,7 +165,7 @@ private:
      * @param src_right
      * @return
      */
-    bool stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right);
+    bool stateSearchingTarget(cv::Mat &src_left);
 
     /**
      * @brief tracking state, it will tracking the given area until the condition is not met
@@ -173,7 +173,7 @@ private:
      * @param src_right
      * @return
      */
-    bool stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right);
+    bool stateTrackingTarget(cv::Mat &src_left);
 
     /**
      * @brief split the unprocessed bayer matrix into blue and red. The blue and red are only 1/4 of the raw image
@@ -188,7 +188,7 @@ private:
      * @param src_left
      * @param src_right
      */
-    void imagePreprocess(cv::Mat &src_left, cv::Mat &src_right);
+    void imagePreprocess(cv::Mat &src_left);
 
     /**
      * @brief find light blobs from the images.
@@ -198,7 +198,7 @@ private:
      * @param light_blobs_real_right
      * @return
      */
-    bool pipelineForFindLightBlob(cv::Mat &src_left, cv::Mat &src_right, std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right);
+    bool pipelineForFindLightBlob(cv::Mat &src_left, std::vector<LightBlob> &light_blobs_real_left);
 
     /**
      * @brief process for find light blobs, enlarge the difference between the dark and light, to highlight the light blob
@@ -238,8 +238,6 @@ public:
      * @param armor_box_right
      * @return
      */
-    bool matchTwoArmorBox(vector<cv::Rect2d> &armor_box_list_left, vector<cv::Rect2d> &armor_box_list_right,
-            cv::Rect2d &armor_box_left, cv::Rect2d &armor_box_right);
 
 public:
 
@@ -327,20 +325,19 @@ public:
     /**
      * @brief all those show*** functions are used to display the images with found light blobs or armor rect.
      * @param windows_name
-     * @param src0
+     * @param src_left
      * @param src1
      */
-    void showTwoImages(std::string windows_name, const cv::Mat &src0, const cv::Mat &src1);
+    void showImage(std::string windows_name, const cv::Mat &src_left);
 
-    void showContours(std::string windows_name, const cv::Mat &src_left, const std::vector<LightBlob> &light_blobs_left,
-            const cv::Mat &src_right, const std::vector<LightBlob> &light_blobs_right);
+    void
+    showContours(std::string windows_name, const cv::Mat &src_left, const std::vector<LightBlob> &light_blobs_left);
 
 
-    void showArmorBox(std::string windows_name, const cv::Mat &src_left, const cv::Rect2d &armor_box_left,
-            const cv::Mat &src_right, const cv::Rect2d &armor_box_right);
+    void showArmorBox(std::string windows_name, const cv::Mat &src_left, const cv::Rect2d &armor_box_left);
 
-    void showArmorBoxVector(std::string windows_name, const cv::Mat &src_left, const vector<cv::Rect2d> &armor_box_left,
-                            const cv::Mat &src_right, const vector<cv::Rect2d> &armor_box_right);
+    void
+    showArmorBoxVector(std::string windows_name, const cv::Mat &src_left, const vector<cv::Rect2d> &armor_box_left);
 
     void showSpacePositionBackToStereoVision(
             const cv::Mat &src_left, const cv::Mat &src_right, const cv::Point3d &space_position);

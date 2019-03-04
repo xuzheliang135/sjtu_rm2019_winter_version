@@ -61,7 +61,7 @@ public:
      * @param src1
      * @return
      */
-    bool read(cv::Mat& src0, cv::Mat& src1) final;
+    bool read(cv::Mat &src0) final;
 
     /**
      * @brief read the image without process, it is a single channel, but it is a bayer matrix
@@ -69,7 +69,7 @@ public:
      * @param src1
      * @return
      */
-    bool readRaw(cv::Mat& src0, cv::Mat& src1);
+    bool readRaw(cv::Mat &src0);
 
     /**
      * @brief read the image with process, it is three channels color image, but it is slower.

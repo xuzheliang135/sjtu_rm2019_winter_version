@@ -31,7 +31,7 @@ int main()
     int enemy_color = ENEMY_BLUE;
     int from_camera = 1;
     cout << "Input 1 for camera, 0 for video files" << endl;
-//    cin >> from_camera;
+    cin >> from_camera;
 
     while (true) {
 
@@ -41,9 +41,7 @@ int main()
             video = new CameraWrapper;
         else
             video = new VideoWrapper(
-                    "/home/zhikun/Videos/video_color_0.avi",
-                    "/home/zhikun/Videos/video_color_1.avi"
-                    );
+                    "/home/xuzheliang135/Downloads/video/video_color_0.avi");
 
         if(video->init())
         {
@@ -60,8 +58,8 @@ int main()
 
         for(int i = 0; i < 5; i++)
         {
-            video->read(src_left, src_right); // to eliminate the initial noise images
-            video->read(src_left_parallel, src_right_parallel);
+            video->read(src_left); // to eliminate the initial noise images
+            video->read(src_left_parallel);
         }
 
         cout<<"start working"<<endl;
@@ -74,11 +72,11 @@ int main()
 #pragma omp parallel sections
         {
 #pragma omp section
-            {ok = video->read(src_left, src_right);}
+                { ok = video->read(src_left); }
 #pragma omp section
             {
-                //armor_finder.showTwoImages("raw", src_left_parallel, src_right_parallel);
-                armor_finder.run(src_left_parallel, src_right_parallel);
+                //armor_finder.showImage("raw", src_left_parallel, src_right_parallel);
+                armor_finder.run(src_left_parallel);
             }
         }
 #pragma omp barrier
@@ -86,11 +84,11 @@ int main()
 #pragma omp parallel sections
         {
 #pragma omp section
-            {ok = video->read(src_left_parallel, src_right_parallel);}
+                { ok = video->read(src_left_parallel); }
 #pragma omp section
             {
-                //armor_finder.showTwoImages("raw", src_left, src_right);
-                armor_finder.run(src_left, src_right);
+                //armor_finder.showImage("raw", src_left, src_right);
+                armor_finder.run(src_left);
             }
         }
 #pragma omp barrier

@@ -23,7 +23,7 @@ public:
      * @param filename0
      * @param filename1
      */
-    VideoWrapper(const std::string& filename0, const std::string& filename1);
+    VideoWrapper(const std::string &filename0);
     ~VideoWrapper();
 
 
@@ -40,9 +40,9 @@ public:
      * @param src_right : output source video of right camera
      * @return bool value: whether the reading is successful
      */
-    bool read(cv::Mat &src_left, cv::Mat &src_right) final;
+    bool read(cv::Mat &src_left) final;
 private:
-    cv::VideoCapture video0, video1;
+    cv::VideoCapture video0;
 
 };
 

@@ -35,13 +35,10 @@ void drawRotatedRectangle(Mat &img, const RotatedRect &rect, const Scalar &s) {
 }
 
 void ArmorFinder::clear_light_blobs_vector() {
-    light_blobs_right_light_.clear();
     light_blobs_left_light_.clear();
 
-    light_blobs_right_color_.clear();
     light_blobs_left_color_.clear();
 
-    light_blobs_right_real_.clear();
     light_blobs_left_real_.clear();
 }
 
@@ -59,27 +56,22 @@ void judge_light_color(vector<LightBlob> &light, vector<LightBlob> &color, vecto
     }
 }
 
-void preprocessColor(cv::Mat &src_left, cv::Mat &src_right) {
+void preprocessColor(cv::Mat &src_left) {
     static Mat kernel_erode = getStructuringElement(MORPH_RECT, Size(1, 4));
     erode(src_left, src_left, kernel_erode);
-    erode(src_right, src_right, kernel_erode);
 
     static Mat kernel_dilate = getStructuringElement(MORPH_RECT, Size(2, 4));
     dilate(src_left, src_left, kernel_dilate);
-    dilate(src_right, src_right, kernel_dilate);
 
     static Mat kernel_erode2 = getStructuringElement(MORPH_RECT, Size(2, 4));
     erode(src_left, src_left, kernel_erode2);
-    erode(src_right, src_right, kernel_erode2);
 
     static Mat kernel_dilate2 = getStructuringElement(MORPH_RECT, Size(3, 6));
     dilate(src_left, src_left, kernel_dilate2);
-    dilate(src_right, src_right, kernel_dilate2);
 
     float alpha = 1.5;
     int beta = 0;
     src_left.convertTo(src_left, -1, alpha, beta);
-    src_right.convertTo(src_right, -1, alpha, beta);
 }
 
 bool ArmorFinder::findLightBlob(const cv::Mat &src, vector<LightBlob> &light_blobs) {
@@ -114,35 +106,30 @@ bool ArmorFinder::isValidLightContour(const vector<Point> &light_contour) {
              cur_contour_area < light_blob_param_.CONTOUR_AREA_MIN);
 }
 
-bool ArmorFinder::pipelineForFindLightBlob(cv::Mat &src_left_light, cv::Mat &src_right_light,
-        std::vector<LightBlob> &light_blobs_real_left, std::vector<LightBlob> &light_blobs_real_right) {
+bool ArmorFinder::pipelineForFindLightBlob(cv::Mat &src_left_light,
+                                           std::vector<LightBlob> &light_blobs_real_left) {
 
     pipelineLightBlobPreprocess(src_left_light);
-    pipelineLightBlobPreprocess(src_right_light);
 
-    preprocessColor(src_left_, src_right_); //腐蚀，膨胀
-//    showTwoImages("small size", src_left_, src_right_);
-//    showTwoImages("color_after_erode", src_left_, src_right_);
+    preprocessColor(src_left_); //腐蚀，膨胀
+//    showImage("small size", src_left_, src_right_);
+//    showImage("color_after_erode", src_left_, src_right_);
 
     resize(src_left_, src_left_, Size(640, 480));
-    resize(src_right_, src_right_, Size(640, 480));
 
     clear_light_blobs_vector();
 
     findLightBlob(src_left_light, light_blobs_left_light_);
-    findLightBlob(src_right_light, light_blobs_right_light_);
 //    showContours("lightbolbs light", src_left_light, light_blobs_left_light_, src_right_light, light_blobs_right_light_);
 
     findLightBlob(src_left_, light_blobs_left_color_);
-    findLightBlob(src_right_, light_blobs_right_color_);
 //    showContours("lightbolbs color", src_left_, light_blobs_left_color_, src_right_, light_blobs_right_color_);
 
 
 
     judge_light_color(light_blobs_left_light_, light_blobs_left_color_, light_blobs_real_left);
-    judge_light_color(light_blobs_right_light_, light_blobs_right_color_, light_blobs_real_right);
 
 //    showContours("light blobs real", src_raw_left_, light_blobs_real_left, src_raw_right_, light_blobs_real_right);
 
-    return !(light_blobs_real_left.empty() || light_blobs_real_right.empty());
+    return !(light_blobs_real_left.empty());
 }
