@@ -8,13 +8,10 @@ using std::vector;
 
 
 ArmorFinder::ArmorFinder():
-                kcf_tracker_left_(false, true, false, false),
-                kcf_tracker_right_(false, true, false, false),
-                uart_(),
-                src_blue0(240, 320, CV_8UC1),
-                src_blue1(240, 320, CV_8UC1),
-                src_red0(240, 320, CV_8UC1),
-                src_red1(240, 320, CV_8UC1)
+        kcf_tracker_left_(false, true, false, false),
+        uart_(),
+        src_blue0(240, 320, CV_8UC1),
+        src_red0(240, 320, CV_8UC1)
                 {
     initLightParam();
     initLightCoupleParam();
@@ -32,7 +29,6 @@ ArmorFinder::ArmorFinder():
 
     enemy_color_ = ENEMY_RED;
     total_contour_area_left_ = 0;
-    total_contour_area_right_ = 0;
 
     position_diff = 0;
 }

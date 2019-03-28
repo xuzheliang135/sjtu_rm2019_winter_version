@@ -13,8 +13,9 @@ using std::hex;
 
 
 Uart::Uart(){
-
     fd = open("/dev/ttyUSB0", O_RDWR);
+//    fd = open("/dev/ttyTHS2", O_RDWR | O_NOCTTY | O_NDELAY);
+
     if(fd < 0)
     {
         cerr<<"open port error"<<endl;
@@ -124,8 +125,8 @@ void Uart::sendTarget(float x, float y, float z) {
 
     countFPS();
 
-    x_tmp= static_cast<short>(x * (32768 - 1) / 100);
-    y_tmp= static_cast<short>(y * (32768 - 1) / 100);
+    x_tmp = static_cast<short>(x * (32768 - 1) / 360);
+    y_tmp = static_cast<short>(y * (32768 - 1) / 360);
     z_tmp= static_cast<short>(z * (32768 - 1) / 1000);
 
 
@@ -147,7 +148,7 @@ void Uart::countFPS() {
     if(cur_time != t)
     {
         cur_time = t;
-        cout<<"FPS: "<<fps<<endl;
+        cout << "FPS:" << fps << endl;
         fps = 0;
     }
     fps += 1;

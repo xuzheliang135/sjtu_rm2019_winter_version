@@ -13,7 +13,7 @@
 #include "camera/video_wrapper.h"
 #include "camera/wrapper_head.h"
 #include "tools/calibrate_tool.h"
-
+#include <unistd.h>
 
 #include <ctime>
 
@@ -104,3 +104,23 @@ int main()
     }
     return 0;
 }
+//int main(){
+//    ArmorFinder armor_finder;
+//    while(true){
+//        for (int i = 0; i < 1; ++i) {
+//            armor_finder.sendTargetByUart(
+//                    static_cast<float>(0.5),
+//                    static_cast<float>(0),
+//                    static_cast<float>(300));
+//            usleep(10000);
+//        }
+//        for (int i = 0; i < 1; ++i) {
+//            armor_finder.sendTargetByUart(
+//                    static_cast<float>(-0.5),
+//                    static_cast<float>(0),
+//                    static_cast<float>(300));
+//            usleep(10000);
+//        }
+//    }
+//
+//}

@@ -31,11 +31,10 @@ public:
     ArmorFinder();
 
     ~ArmorFinder()= default;
-    cv::Mat src_left_, src_right_;
-    cv::Mat src_blue0, src_red0, src_blue1, src_red1;
-    cv::Mat src_raw_right_, src_raw_left_;
-    cv::Mat src_bin_left_, src_bin_right_;
 
+    cv::Mat src_left_;
+    cv::Mat src_blue0, src_red0, src_blue1, src_red1;
+    cv::Mat src_raw_left_;
     /**
      * @brief the interface of armor_finder
      * @param src_left : input
@@ -63,20 +62,20 @@ private:
     /**
      * vectors to store light blobs
      */
-    std::vector<LightBlob> light_blobs_left_light_, light_blobs_right_light_;
-    std::vector<LightBlob> light_blobs_left_color_, light_blobs_right_color_;
-    std::vector<LightBlob> light_blobs_left_real_, light_blobs_right_real_;
+    std::vector<LightBlob> light_blobs_left_light_;
+    std::vector<LightBlob> light_blobs_left_color_;
+    std::vector<LightBlob> light_blobs_left_real_;
     std::vector<int> armor_num_left, armor_num_right;
 
     /**
      * Rects to store the found armor box position
      */
-    cv::Rect2d armor_box_left_, armor_box_right_;
+    cv::Rect2d armor_box_left_;
 
     /**
      * Rects list to store all the possible armor box position
      */
-    std::vector<cv::Rect2d> armor_boxes_left_, armor_boxes_right_;
+    std::vector<cv::Rect2d> armor_boxes_left_;
 
     /**
      * a counter for changing state from searching to tracking
@@ -106,7 +105,6 @@ private:
     /**
      * variable to determine the exit condition of tracking
      */
-    double total_contour_area_right_;
     double total_contour_area_left_;
 
     /**
@@ -267,16 +265,6 @@ public:
      */
     bool matchLightBlobVector(std::vector<LightBlob> &light_blobs, vector<cv::Rect2d> &armor_box);
 
-public:
-    /**
-     * @brief   convert two 2D coordinates to 3D coordinate
-     * @param   armor_box_left: input armor box rect in left camera
-     * @param   armor_box_right: input armor box rect in right camera
-     * @param   space_position: output 3D point of armor
-     * @return  bool value: whether it can be converted
-     */
-    bool convertToStereoscopicCoordinate(
-            cv::Rect2d &armor_box_left, cv::Rect2d &armor_box_right, cv::Point3d &space_position);
 
 public:
     /**
@@ -319,8 +307,6 @@ private:
     bool isCoupleLight(const LightBlob &light_blob_x, const LightBlob &light_blob_y);
 
 
-    void manageHistorySpacePosition(const cv::Point3d &space_position);
-
 public:
     /**
      * @brief all those show*** functions are used to display the images with found light blobs or armor rect.
@@ -338,10 +324,6 @@ public:
 
     void
     showArmorBoxVector(std::string windows_name, const cv::Mat &src_left, const vector<cv::Rect2d> &armor_box_left);
-
-    void showSpacePositionBackToStereoVision(
-            const cv::Mat &src_left, const cv::Mat &src_right, const cv::Point3d &space_position);
-
 
     /**
      * @brief give the tracker an area to let it track

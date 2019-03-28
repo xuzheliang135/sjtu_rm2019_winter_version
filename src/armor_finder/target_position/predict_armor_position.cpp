@@ -17,14 +17,14 @@ void ArmorFinder::initArmorPredictParam(){
     armor_predict_param_.time_predict = 500;   // 500 ms
 }
 
-void ArmorFinder::manageHistorySpacePosition(const cv::Point3d &space_position) {
-    clock_t cur_time = clock();
-    armor_history_positions_.push_back(space_position);
-    if(armor_history_positions_.size() > armor_predict_param_.ARMOR_POSITION_HISTORY_MAX_LENGTH)
-    {
-        armor_history_positions_.erase(armor_history_positions_.begin());
-    }
-}
+//void ArmorFinder::manageHistorySpacePosition(const cv::Point3d &space_position) {
+//    clock_t cur_time = clock();
+//    armor_history_positions_.push_back(space_position);
+//    if(armor_history_positions_.size() > armor_predict_param_.ARMOR_POSITION_HISTORY_MAX_LENGTH)
+//    {
+//        armor_history_positions_.erase(armor_history_positions_.begin());
+//    }
+//}
 
 
 bool ArmorFinder::predictArmorPosition(cv::Point3d &armor_position,

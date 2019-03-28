@@ -22,6 +22,13 @@ void ArmorFinder::initArmorSeekingParam() {
     armor_seeking_param_.BOX_EXTRA = 5;
 }
 
+void ArmorFinder::initCameraParam() {
+    stereo_camera_param_.CAMERA_DISTANCE = 19;  // cm
+    stereo_camera_param_.FOCUS = 0.36;          // 4mm = 0.4cm
+    stereo_camera_param_.LENGTH_PER_PIXAL = 0.48 / 640;
+
+}
+
 bool ArmorFinder::matchLightBlobVector(std::vector<LightBlob> &light_blobs, vector<cv::Rect2d> &armor_boxes) {
     armor_boxes.clear();
     if (light_blobs.size() < 2)

@@ -2,7 +2,7 @@
 
 using namespace cv;
 
-void ArmorFinder::initTrackingParam(){
+void ArmorFinder::initTrackingParam() {
     track_param_.THRESHOLD_FOR_COUNT_NON_ZERO = 200;
     track_param_.TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO = 0.5;
 
@@ -23,14 +23,15 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left) {
 
     if (abs(countNonZero(roi_left) - total_contour_area_left_) >=
         track_param_.TRANSFER_RATIO_OF_TRACKING_AREA_NONZERO * total_contour_area_left_) {
-            return false;
+        return false;
     }
 
     showArmorBox("tracking boxes", src_left, armor_box_left_);
 
-    /********************** convert to 3d coordinate *********************************/
-//    convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
-//todo
+    /********************** convert to angel *********************************/
+    armor_space_position_.x =
+            (armor_box_left_.x + armor_box_left_.width / 2 - 640 / 2) * 45 / 640;//todo width or height
+    armor_space_position_.y = -(armor_box_left_.y + armor_box_left_.height / 2 - 480 / 2) * 45 / 640;
     /*************** a predict function for moving target with only constant speed *******************/
     targetTrackPositionStreamControl(armor_space_position_);
 

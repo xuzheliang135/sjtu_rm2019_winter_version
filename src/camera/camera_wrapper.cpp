@@ -8,15 +8,11 @@ using std::cout;
 using std::endl;
 using namespace cv;
 
-CameraWrapper::CameraWrapper()
-{
+CameraWrapper::CameraWrapper() {
     camera_cnts = 2;
-    camera_status0 = -1;
-    camera_status1 = -1;
-    iplImage0 = nullptr;
-    iplImage1 = nullptr;
-    channel0 = 3;
-    channel1 = 3;
+    camera_status = -1;
+    iplImage = nullptr;
+    channel = 3;
 }
 
 
@@ -24,58 +20,48 @@ bool CameraWrapper::init() {
     CameraSdkInit(1);
 
     //枚举设备，并建立设备列表
-    int camera_enumerate_device_status =  CameraEnumerateDevice(camera_enum_list, &camera_cnts);
+    int camera_enumerate_device_status = CameraEnumerateDevice(camera_enum_list, &camera_cnts);
     //cout<<"camera enumerate device status: "<<camera_enumerate_device_status<<endl;
     //cout<<"camera number: "<<camera_cnts<<endl;
 
     //没有连接设备
     if (camera_cnts == 0) {
-        cout<<"No device detected!"<<endl;
+        cout << "No device detected!" << endl;
         return false;
-    }
-    else if(camera_cnts == 1)
-    {
+    } else if (camera_cnts == 1) {
         cout << "One camera device detected" << endl;
-        return false;
-    }
-    else
-    {
+    } else {
         cout << "More than 1 cameras detected or some other error occurs." << endl;
         return false;
     }
 
     //相机初始化。初始化成功后，才能调用任何其他相机相关的操作接口
-    camera_status0 = CameraInit(&camera_enum_list[0], -1, -1, &h_camera0);
+    camera_status = CameraInit(&camera_enum_list[0], -1, -1, &h_camera);
     //初始化失败
-    if (camera_status0 != CAMERA_STATUS_SUCCESS) {
-        cout<<"Camera 0 initialization failed with code "<<camera_status0<<". See camera_status.h to find the code meaning."<<endl;
+    if (camera_status != CAMERA_STATUS_SUCCESS) {
+        cout << "Camera 0 initialization failed with code " << camera_status
+             << ". See camera_status.h to find the code meaning." << endl;
         return false;
     }
 
-    CameraGetFriendlyName(h_camera0, camera_name0);
-    //如果读取的相机列表不是0在左，1在右，则交换相机句柄
-    if(strcmp(camera_name0, "left") != 0)
-    {
-        swapCameraHandle();
-    }
-    CameraGetFriendlyName(h_camera0, camera_name0);
-    cout << "camera names: " << camera_name0 << endl;
+    CameraGetFriendlyName(h_camera, camera_name);
+    cout << "camera names: " << camera_name << endl;
 
     //获得相机的特性描述结构体。该结构体中包含了相机可设置的各种参数的范围信息。决定了相关函数的参数
-    CameraGetCapability(h_camera0, &tCapability0);
+    CameraGetCapability(h_camera, &tCapability);
 
     // set resolution to 320*240
     // CameraSetImageResolution(hCamera, &(tCapability.pImageSizeDesc[2]));
 
-    rgb_buffer0 = (unsigned char *)malloc(tCapability0.sResolutionRange.iHeightMax *
-            tCapability0.sResolutionRange.iWidthMax * 3);
+    rgb_buffer0 = (unsigned char *) malloc(tCapability.sResolutionRange.iHeightMax *
+                                           tCapability.sResolutionRange.iWidthMax * 3);
 
-    CameraSetAeState(h_camera0, true);  //设置是否自动曝光
+    CameraSetAeState(h_camera, true);  //设置是否自动曝光
 
     /*让SDK进入工作模式，开始接收来自相机发送的图像
     数据。如果当前相机是触发模式，则需要接收到
     触发帧以后才会更新图像。    */
-    CameraPlay(h_camera0);
+    CameraPlay(h_camera);
 
     /*其他的相机参数设置
     例如 CameraSetExposureTime   CameraGetExposureTime  设置/读取曝光时间
@@ -84,21 +70,21 @@ bool CameraWrapper::init() {
          CameraGetFriendlyName    CameraSetFriendlyName 获取/设置相机名称（该名称可写入相机硬件）
     */
     double exposure_time0 = 0;
-    CameraGetExposureTime(h_camera0, &exposure_time0);
+    CameraGetExposureTime(h_camera, &exposure_time0);
     cout << "exposure time " << exposure_time0 << endl;
 
     // 抗频闪
-    CameraSetAntiFlick(h_camera0, true);
+    CameraSetAntiFlick(h_camera, true);
 
 
-    if (tCapability0.sIspCapacity.bMonoSensor) {
-        channel0 = 1;
-        CameraSetIspOutFormat(h_camera0, CAMERA_MEDIA_TYPE_MONO8);
-        cout<<"camera0 mono "<<endl;
+    if (tCapability.sIspCapacity.bMonoSensor) {
+        channel = 1;
+        CameraSetIspOutFormat(h_camera, CAMERA_MEDIA_TYPE_MONO8);
+        cout << "camera0 mono " << endl;
     } else {
-        channel0 = 3;
-        CameraSetIspOutFormat(h_camera0, CAMERA_MEDIA_TYPE_BGR8);
-        cout<<"camera0 color mode"<<endl;
+        channel = 3;
+        CameraSetIspOutFormat(h_camera, CAMERA_MEDIA_TYPE_BGR8);
+        cout << "camera0 color mode" << endl;
     }
 
     return true;
@@ -114,24 +100,23 @@ bool CameraWrapper::read(cv::Mat &src0) {
 
 
 bool CameraWrapper::readRaw(cv::Mat &src0) {
-    if (CameraGetImageBuffer(h_camera0, &frame_info0, &pby_buffer0, 1000) == CAMERA_STATUS_SUCCESS)
-    {
-        if (iplImage0) {
-            cvReleaseImageHeader(&iplImage0);
+    if (CameraGetImageBuffer(h_camera, &frame_info, &pby_buffer, 1000) == CAMERA_STATUS_SUCCESS) {
+        if (iplImage) {
+            cvReleaseImageHeader(&iplImage);
         }
 
-        iplImage0 = cvCreateImageHeader(cvSize(frame_info0.iWidth, frame_info0.iHeight), IPL_DEPTH_8U, 1);
+        iplImage = cvCreateImageHeader(cvSize(frame_info.iWidth, frame_info.iHeight), IPL_DEPTH_8U, 1);
 
-        cvSetData(iplImage0, pby_buffer0, frame_info0.iWidth);  //此处只是设置指针，无图像块数据拷贝，不需担心转换效率
+        cvSetData(iplImage, pby_buffer, frame_info.iWidth);  //此处只是设置指针，无图像块数据拷贝，不需担心转换效率
 
-        src0 = cv::cvarrToMat(iplImage0);
+        src0 = cv::cvarrToMat(iplImage);
 
         //在成功调用CameraGetImageBuffer后，必须调用CameraReleaseImageBuffer来释放获得的buffer。
         //否则再次调用CameraGetImageBuffer时，程序将被挂起一直阻塞，直到其他线程中调用CameraReleaseImageBuffer来释放了buffer
-        CameraReleaseImageBuffer(h_camera0, pby_buffer0);
+        CameraReleaseImageBuffer(h_camera, pby_buffer);
 
 //        double exposure_time0 = 0, exposure_time1 = 0;
-//        CameraGetExposureTime(h_camera0, &exposure_time0);
+//        CameraGetExposureTime(h_camera, &exposure_time0);
 //        CameraGetExposureTime(h_camera1, &exposure_time1);
 //        cout<<"exposure time "<<exposure_time0<<" "<<exposure_time1<<endl;
 
@@ -142,32 +127,22 @@ bool CameraWrapper::readRaw(cv::Mat &src0) {
 }
 
 bool CameraWrapper::readProcessed(cv::Mat &src0, cv::Mat &src1) {
-    if (CameraGetImageBuffer(h_camera0, &frame_info0, &pby_buffer0, 1000) == CAMERA_STATUS_SUCCESS &&
-        CameraGetImageBuffer(h_camera1, &frame_info1, &pby_buffer1, 1000) == CAMERA_STATUS_SUCCESS)
-    {
-
-        CameraImageProcess(h_camera0, pby_buffer0, rgb_buffer0, &frame_info0);  // this function is super slow, better not to use it.
-        CameraImageProcess(h_camera1, pby_buffer1, rgb_buffer1, &frame_info1);
-        if (iplImage0) {
-            cvReleaseImageHeader(&iplImage0);
-        }
-        if (iplImage1){
-            cvReleaseImageHeader(&iplImage1);
+    if (CameraGetImageBuffer(h_camera, &frame_info, &pby_buffer, 1000) == CAMERA_STATUS_SUCCESS) {
+        CameraImageProcess(h_camera, pby_buffer, rgb_buffer0,
+                           &frame_info);// this function is super slow, better not to use it.
+        if (iplImage) {
+            cvReleaseImageHeader(&iplImage);
         }
 
-        iplImage0 = cvCreateImageHeader(cvSize(frame_info0.iWidth, frame_info0.iHeight), IPL_DEPTH_8U, channel0);
-        iplImage1 = cvCreateImageHeader(cvSize(frame_info1.iWidth, frame_info1.iHeight), IPL_DEPTH_8U, channel1);
+        iplImage = cvCreateImageHeader(cvSize(frame_info.iWidth, frame_info.iHeight), IPL_DEPTH_8U, channel);
 
-        cvSetData(iplImage0, rgb_buffer0, frame_info0.iWidth * channel0);  //此处只是设置指针，无图像块数据拷贝，不需担心转换效率
-        cvSetData(iplImage1, rgb_buffer1, frame_info1.iWidth * channel1);
+        cvSetData(iplImage, rgb_buffer0, frame_info.iWidth * channel);  //此处只是设置指针，无图像块数据拷贝，不需担心转换效率
 
-        src0 = cv::cvarrToMat(iplImage0);
-        src1 = cv::cvarrToMat(iplImage1);
+        src0 = cv::cvarrToMat(iplImage);
 
         //在成功调用CameraGetImageBuffer后，必须调用CameraReleaseImageBuffer来释放获得的buffer。
         //否则再次调用CameraGetImageBuffer时，程序将被挂起一直阻塞，直到其他线程中调用CameraReleaseImageBuffer来释放了buffer
-        CameraReleaseImageBuffer(h_camera0, pby_buffer0);
-        CameraReleaseImageBuffer(h_camera1, pby_buffer1);
+        CameraReleaseImageBuffer(h_camera, pby_buffer);
         return true;
     } else {
         return false;
@@ -175,57 +150,31 @@ bool CameraWrapper::readProcessed(cv::Mat &src0, cv::Mat &src1) {
 }
 
 
-CameraWrapper::~CameraWrapper()
-{
-    CameraUnInit(h_camera0);
-    CameraUnInit(h_camera1);
+CameraWrapper::~CameraWrapper() {
+    CameraUnInit(h_camera);
     //注意，先反初始化后再free
     free(rgb_buffer0);
-    free(rgb_buffer1);
-}
-
-void CameraWrapper::swapCameraHandle() {
-    int tmp_h_camera = h_camera0;
-    h_camera0 = h_camera1;
-    h_camera1 = tmp_h_camera;
 }
 
 
-void CameraWrapper::read_camera_thread0(cv::Mat &src){
-    if(CameraGetImageBuffer(h_camera0, &frame_info0, &pby_buffer0, 1000) == CAMERA_STATUS_SUCCESS){
-        CameraImageProcess(h_camera0, pby_buffer0, rgb_buffer0, &frame_info0);
-        iplImage0 = cvCreateImageHeader(cvSize(frame_info0.iWidth, frame_info0.iHeight), IPL_DEPTH_8U, channel0);
-        cvSetData(iplImage0, rgb_buffer0, frame_info0.iWidth * channel0);
-        src = cv::cvarrToMat(iplImage0);
-        CameraReleaseImageBuffer(h_camera0, pby_buffer0);
+void CameraWrapper::read_camera_thread0(cv::Mat &src) {
+    if (CameraGetImageBuffer(h_camera, &frame_info, &pby_buffer, 1000) == CAMERA_STATUS_SUCCESS) {
+        CameraImageProcess(h_camera, pby_buffer, rgb_buffer0, &frame_info);
+        iplImage = cvCreateImageHeader(cvSize(frame_info.iWidth, frame_info.iHeight), IPL_DEPTH_8U, channel);
+        cvSetData(iplImage, rgb_buffer0, frame_info.iWidth * channel);
+        src = cv::cvarrToMat(iplImage);
+        CameraReleaseImageBuffer(h_camera, pby_buffer);
         read_state0 = true;
-    } else{
+    } else {
         read_state0 = false;
-    }
-
-}
-
-void CameraWrapper::read_camera_thread1(cv::Mat &src){
-    if(CameraGetImageBuffer(h_camera1, &frame_info1, &pby_buffer1, 1000) == CAMERA_STATUS_SUCCESS){
-        CameraImageProcess(h_camera1, pby_buffer1, rgb_buffer1, &frame_info1);
-        iplImage1 = cvCreateImageHeader(cvSize(frame_info1.iWidth, frame_info1.iHeight), IPL_DEPTH_8U, channel1);
-        cvSetData(iplImage1, rgb_buffer1, frame_info1.iWidth * channel1);
-        src = cv::cvarrToMat(iplImage1);
-        CameraReleaseImageBuffer(h_camera1, pby_buffer1);
-        read_state1 = true;
-    } else
-    {
-        read_state1 = false;
     }
 
 }
 
 bool CameraWrapper::read_thread(cv::Mat &src0, cv::Mat &src1) {
     std::thread t1(&CameraWrapper::read_camera_thread0, this, std::ref(src0));
-    std::thread t2(&CameraWrapper::read_camera_thread1, this, std::ref(src1));
     t1.join();
-    t2.join();
-    return read_state0 && read_state1;
+    return read_state0;
 }
 
 
