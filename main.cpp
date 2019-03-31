@@ -31,7 +31,7 @@ int main()
     int enemy_color = ENEMY_BLUE;
     int from_camera = 1;
     cout << "Input 1 for camera, 0 for video files" << endl;
-    cin >> from_camera;
+//    cin >> from_camera;
 
     while (true) {
 
@@ -39,9 +39,9 @@ int main()
 
         if(from_camera)
             video = new CameraWrapper;
-        else
-            video = new VideoWrapper(
-                    "/home/xuzheliang135/Downloads/video/video_color_0.avi");
+//        else
+//            video = new VideoWrapper(
+//                    "/home/xuzheliang135/Downloads/video/video_color_0.avi");
 
         if(video->init())
         {
@@ -63,8 +63,6 @@ int main()
         }
 
         cout<<"start working"<<endl;
-//        time_t start = time(nullptr);
-//        int cnt = 0;
         bool ok = true;
         while (ok)
         {

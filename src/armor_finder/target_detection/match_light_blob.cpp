@@ -67,7 +67,58 @@ bool ArmorFinder::matchLightBlobVector(std::vector<LightBlob> &light_blobs, vect
 
 }
 
+int minX(std::vector<cv::Point> tmp_contours) {
+    int min_x = tmp_contours[0].x;
+    int n = tmp_contours.size();
+    for (int i = 0; i < n; ++i) {
+        min_x = min_x > tmp_contours[i].x ? tmp_contours[i].x : min_x;
+    }
+    return min_x;
 
+}
+
+int maxX(std::vector<cv::Point> tmp_contours) {
+    int max_x = tmp_contours[0].x;
+    int n = tmp_contours.size();
+    for (int i = 0; i < n; ++i) {
+        max_x = max_x < tmp_contours[i].x ? tmp_contours[i].x : max_x;
+    }
+    return max_x;
+
+}
+
+double slope(std::vector<cv::Point> tmp_contours) {
+
+    for (std::vector<cv::Point>::iterator ite_1 = tmp_contours.begin(); ite_1 != tmp_contours.end(); ite_1++) {
+        for (std::vector<cv::Point>::iterator ite_2(ite_1); ite_2 != tmp_contours.end(); ++ite_2) {
+            if ((*ite_1).y == (*ite_2).y) {
+                int x = (*ite_1).x > (*ite_2).x ? (*ite_2).x : (*ite_1).x;
+                (*ite_1).x = x;
+                (*ite_2).x = x;
+            }
+
+        }
+    }
+
+    int sum_x = 0;
+    int sum_y = 0;
+    int sum_xy = 0;
+    int sum_xx = 0;
+    int sum_yy = 0;
+    int n = tmp_contours.size();
+    for (int j = 0; j < n; ++j) {
+        sum_x += tmp_contours[j].x;
+        sum_y += tmp_contours[j].y;
+        sum_xy += (tmp_contours[j].x * tmp_contours[j].y);
+        sum_xx += (tmp_contours[j].x * tmp_contours[j].x);
+        sum_yy += (tmp_contours[j].y * tmp_contours[j].y);
+    }
+    double averge_x = double(sum_x) / n;
+    double averge_y = double(sum_y) / n;
+    double b = double(sum_xy - n * averge_x * averge_y) / double(sum_xx - n * averge_x * averge_x);
+    return b;
+
+}
 double leastSquare(const LightBlob &light_blob) {
     double x_average = 0, y_average = 0, x_squa_average = 0, x_y_average = 0;
     for (auto &point:light_blob.contours) {
@@ -88,15 +139,6 @@ bool newAngelJudge(const LightBlob &light_blob_i, const LightBlob &light_blob_j)
     return abs(atan(leastSquare(light_blob_i)) - atan(leastSquare(light_blob_j))) < 0.2;
 }
 bool oldAngelJudge(const LightBlob &light_blob_i, const LightBlob &light_blob_j) {
-//    Point2f side = light_blob_i.rect.center - light_blob_j.rect.center;
-//    Point2f rect;
-//    if (light_blob_i.rect.size.width >= light_blob_i.rect.size.height)
-//        rect = Point2f(static_cast<float>(10 * cos(light_blob_i.rect.angle * 3.1415926 / 180)),
-//                       static_cast<float>(10 * sin(light_blob_i.rect.angle * 3.1415926 / 180)));
-//    else
-//        rect = Point2f(static_cast<float>(10 * cos((light_blob_i.rect.angle + 90) * 3.1415926 / 180)),
-//                       static_cast<float>(10 * sin((light_blob_i.rect.angle + 90) * 3.1415926 / 180)));
-//    return abs(side.dot(rect) * side.dot(rect) / (side.dot(side) * rect.dot(rect))) < 0.03;
     float angle_i = light_blob_i.rect.size.width > light_blob_i.rect.size.height ? light_blob_i.rect.angle :
                     light_blob_i.rect.angle - 90;
     float angle_j = light_blob_j.rect.size.width > light_blob_j.rect.size.height ? light_blob_j.rect.angle :
@@ -123,10 +165,12 @@ bool lengthRatioJudge(const LightBlob &light_blob_i, const LightBlob &light_blob
 }
 
 bool ArmorFinder::isCoupleLight(const LightBlob &light_blob_i, const LightBlob &light_blob_j) {
+//    cout<<abs(slope(light_blob_i.contours)-slope(light_blob_j.contours))<<endl;
     return lengthRatioJudge(light_blob_i, light_blob_j) &&
-            lengthJudge(light_blob_i, light_blob_j) &&
+           lengthJudge(light_blob_i, light_blob_j) &&
            heightJudge(light_blob_i, light_blob_j) &&
-           oldAngelJudge(light_blob_i, light_blob_j);
+           oldAngelJudge(light_blob_i, light_blob_j) &&
+           abs(slope(light_blob_i.contours) - slope(light_blob_j.contours)) < 0.8;
 //    return oldAngelJudge(light_blob_i, light_blob_j);
 }
 
