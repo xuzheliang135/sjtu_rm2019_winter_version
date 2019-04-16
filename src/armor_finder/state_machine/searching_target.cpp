@@ -21,9 +21,8 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light) {
 
 
     /********************** convert to 3d coordinate *********************************/
-    armor_space_position_.x =
-            (armor_box_left_.x + armor_box_left_.width / 2 - 640 / 2) * 45 / 640;//todo width or height
-    armor_space_position_.y = -(armor_box_left_.y + armor_box_left_.height / 2 - 480 / 2) * 45 / 640;
+    armor_space_position_.x = (armor_box_left_.x + armor_box_left_.width / 2 - 320);
+    armor_space_position_.y = -(armor_box_left_.y + armor_box_left_.height / 2 - 240);
      //following lines are useful for aiming rotating target when the FPS is low
      //it will skip some frame when target is changing rapidly
     if(targetSearchPositionStreamControlWillSkip(armor_box_left_.x, armor_box_left_.y)){
@@ -33,5 +32,5 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left_light) {
     return sendTargetByUart(
             static_cast<float>(armor_space_position_.x),
             static_cast<float>(armor_space_position_.y),
-            static_cast<float>(armor_space_position_.z));//armor_space_position_.z is 300
+            static_cast<float>(armor_space_position_.z));
 }

@@ -29,11 +29,8 @@ bool ArmorFinder::stateTrackingTarget(cv::Mat &src_left) {
     showArmorBox("tracking boxes", src_left, armor_box_left_);
 
     /********************** convert to angel *********************************/
-    armor_space_position_.x =
-            (armor_box_left_.x + armor_box_left_.width / 2 - 640 / 2) * 45 / 640;//todo width or height
-    armor_space_position_.y = -(armor_box_left_.y + armor_box_left_.height / 2 - 480 / 2) * 45 / 640;
-    /*************** a predict function for moving target with only constant speed *******************/
-    targetTrackPositionStreamControl(armor_space_position_);
+    armor_space_position_.x = (armor_box_left_.x + armor_box_left_.width / 2 - 320);
+    armor_space_position_.y = -(armor_box_left_.y + armor_box_left_.height / 2 - 240);
 
     /********************** send it by uart and adjust the original point to the center *************/
     return sendTargetByUart(

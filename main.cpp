@@ -26,8 +26,7 @@ using std::ios;
 using std::string;
 
 
-int main()
-{
+int main() {
     int enemy_color = ENEMY_BLUE;
     int from_camera = 1;
     cout << "Input 1 for camera, 0 for video files" << endl;
@@ -37,67 +36,62 @@ int main()
 
         WrapperHead *video;
 
-        if(from_camera)
+        if (from_camera)
             video = new CameraWrapper;
 //        else
 //            video = new VideoWrapper(
 //                    "/home/xuzheliang135/Downloads/video/video_color_0.avi");
 
-        if(video->init())
-        {
-            cout<<"Video source initialization successfully."<<endl;
-        } else{
+        if (video->init()) {
+            cout << "Video source initialization successfully." << endl;
+        } else {
             continue;
         }
 
-        Mat src_left, src_right;
-        Mat src_left_parallel, src_right_parallel;
+        Mat src_left;
+        Mat src_left_parallel;
 
         ArmorFinder armor_finder;
         armor_finder.setEnemyColor(enemy_color);
 
-        for(int i = 0; i < 5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             video->read(src_left); // to eliminate the initial noise images
             video->read(src_left_parallel);
         }
 
-        cout<<"start working"<<endl;
+        cout << "start working" << endl;
         bool ok = true;
-        while (ok)
-        {
+        while (ok) {
 
-#pragma omp parallel sections
-        {
-#pragma omp section
+//#pragma omp parallel sections
+            {
+//#pragma omp section
                 { ok = video->read(src_left); }
-#pragma omp section
-            {
-                //armor_finder.showImage("raw", src_left_parallel, src_right_parallel);
-                armor_finder.run(src_left_parallel);
+//#pragma omp section
+                {
+                    //armor_finder.showImage("raw", src_left_parallel, src_right_parallel);
+                    armor_finder.run(src_left);
+//                armor_finder.run(src_left_parallel);
+                }
             }
-        }
-#pragma omp barrier
-
-#pragma omp parallel sections
-        {
-#pragma omp section
-                { ok = video->read(src_left_parallel); }
-#pragma omp section
-            {
-                //armor_finder.showImage("raw", src_left, src_right);
-                armor_finder.run(src_left);
-            }
-        }
-#pragma omp barrier
+//#pragma omp barrier
+//
+//#pragma omp parallel sections
+//        {
+//#pragma omp section
+//                { ok = video->read(src_left_parallel); }
+//#pragma omp section
+//            {
+//                armor_finder.run(src_left);
+//            }
+//        }
+//#pragma omp barrier
 
             waitKey(1);
         }
-//        time_t end = time(nullptr);
-//        cout<<(double)(end - start) << "s."<<endl;
 
         delete video;
-        cout<<"Program fails. Restarting"<<endl;
+        cout << "Program fails. Restarting" << endl;
 
     }
     return 0;

@@ -1,4 +1,5 @@
 #include "armor_finder/armor_finder.h"
+#include <math.h>
 
 using namespace cv;
 using namespace std;
@@ -45,6 +46,14 @@ public:
     void rewind() {
         p_data = p_start;
     }
+
+    T getMaxAbs() {
+        T res = 0;
+        for (int i = 0; i < maxLength; ++i) {
+            res = res >= abs(data[i]) ? res : abs(data[i]);
+        }
+        return res;
+    }
 };
 
 void showData(DataStorage<float> data, const String &title) {
@@ -53,8 +62,14 @@ void showData(DataStorage<float> data, const String &title) {
     float now, last = height / 2.0f;
     int index = 0;
     data.rewind();
+//    while (data.hasNext()) {
+//        now = -data.next() * height / 2 / 45 + height / 2.0f;
+//        line(pic, Point2f(index++, last), Point2f(index, now), Scalar(0, 255, 0));
+//        last = now;
+//    }
+    float max = 320;
     while (data.hasNext()) {
-        now = -data.next() * height / 2 / 45 + height / 2.0f;
+        now = -data.next() * height / 2 / max + height / 2.0f;
         line(pic, Point2f(index++, last), Point2f(index, now), Scalar(0, 255, 0));
         last = now;
     }
@@ -62,6 +77,8 @@ void showData(DataStorage<float> data, const String &title) {
     waitKey(1);
 }
 
+int focus_length = 280;
+float pai = 3.14159;
 bool ArmorFinder::sendTargetByUart(float x, float y, float z) {
 
 //    static float sum_x=0,sum_y=0;
@@ -69,8 +86,10 @@ bool ArmorFinder::sendTargetByUart(float x, float y, float z) {
 //    sum_x+=x;
 //    sum_y+=y;
 //    data_x.append(x);
-//    showData(data_x,"x");
-    uart_.sendTarget(x, y - 2, z);
+//    showData(data_x, "x");
+    x = atan(x / focus_length) * 180 / pai;
+    y = atan(y / focus_length) * 180 / pai;
+    uart_.sendTarget(x, y, z);
     return true;
 }
 
